@@ -11,7 +11,7 @@
 [general]
 name=RubberSheetingEtc
 qgisMinimumVersion=3.28
-description=Loads Active Vector Themes to PostGIS, Oracle and MS SQL
+description=Provides Rubber Sheeting and Two Point Transformations, storing to PostGIS, Oracle and MS SQL
 about=NOTE!!! This plugin will crash on initial download as there are missing Python Connectors to the databases. See "RubberSheetingETC.html" in the plugin folder for User and Installation instructions. Python Database Connectors: psycopg2, oracledb, pyodbc,{Devart ODBC Driver for Oracle},{Devart ODBC Driver for SQL Server}
 
 version=0.1
@@ -19,13 +19,13 @@ version=0.1
 # Optional items:
 
 # changelog=
-homepage=https://github.com/SpatialTapestry/QGIS-Plugin---Vector-Themes-to-DB
-tracker=https://github.com/SpatialTapestry/QGIS-Plugin---Vector-Themes-to-DB/issues
-repository=https://github.com/SpatialTapestry/QGIS-Plugin---Vector-Themes-to-DB
+homepage=https://github.com/SpatialTapestry/QGIS-Plugin---RubberSheeting
+tracker=https://github.com/SpatialTapestry/QGIS-Plugin---RubberSheeting/issues
+repository=https://github.com/SpatialTapestry/QGIS-Plugin---RubberSheeting
 
 
 # tags are comma separated with spaces allowed
-tags=python, vector, postGIS, Oracle, MS SQL, data migration
+tags=rubber sheeting, two point transformation, python, vector, postGIS, Oracle, MS SQL, data migration
 
 icon=tapestry.png
 
