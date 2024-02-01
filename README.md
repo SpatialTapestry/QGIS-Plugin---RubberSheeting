@@ -4,9 +4,14 @@ However for many the Rubber Sheeting algorithm provided will adequate. This is n
 Spatial Tapestry would love to hear back from anyone with ideas for other algorithms, happy to look at coding them if they sound interesting.
 
 
-It is assumed the user knows: 1/ how to make one or more themes 'Active' in the QGIS Menu 2/ the correct database connection parameters for their database 3/ the SRID/EPSG that the themes will be stored in 4/ the database connectors have been installed.
+It is assumed the user knows: 
+1/ how to make one or more themes 'Active' in the QGIS Menu 
+2/ the correct database connection parameters for their database 
+3/ the SRID/EPSG that the themes will be stored in 
+4/ the database connectors have been installed.
 Installation Instructions:
-QGIS 3.28 is recommended. Do not install Python, instead we will use the Python installed with QGIS. (Installing Python 3.12 on Windows causes problems)
+QGIS 3.28 is recommended. 
+Do not install Python, instead we will use the Python installed with QGIS. (Installing Python 3.12 on Windows causes problems)
 All 3 database connectors must be installed otherwise to code will return errors. Alternatively the Python Source code can be modified to remove references to any unwanted connectors.
 Ubuntu pip3 install -U psycopg2 pip3 install -U oracledb pip3 install -U pyodbc
 Windows 10/11 On Windows the "PythonPath" Environment Variable must be set - be sure to adjust this to your particular computer and QGIS Version: PYTHONPATH C:\Program Files\QGIS 3.28.15\apps\qgis\python;C:\Program Files\QGIS 3.28.15\apps\qgis\python\plugins;C:\Program Files\QGIS 3.28.15\apps\Qt5\plugins;C:\Program Files\QGIS 3.28.15\share\gdal;
