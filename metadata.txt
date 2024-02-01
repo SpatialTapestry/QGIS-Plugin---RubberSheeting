@@ -35,7 +35,7 @@ experimental=False
 deprecated=False
 
 # Author contact information
-author=Roger Merritt, Spatial Tapestry P/L
+author=Roger Merritt, Spatial Tapestry PL
 email=SpatialTapestry@gmail.com
 
 # Since QGIS 3.8, a comma separated list of plugins to be installed
