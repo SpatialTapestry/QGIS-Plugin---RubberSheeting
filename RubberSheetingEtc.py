@@ -253,7 +253,7 @@ class RubberSheetingEtc:
         icon_path = ':/plugins/RubberSheetingEtc/icon.png'
         self.add_action(
             icon_path,
-            text=self.tr(u'Vector To DB Loader'),
+            text=self.tr(u'Rubber Sheeting Etc'),
             callback=self.run,
             parent=self.iface.mainWindow())
 
@@ -385,20 +385,19 @@ class RubberSheetingEtc:
                 if self.dlg.toolBox_Choice.currentIndex() == 0 and self.dlg.CB_DoRubberSheeting.isChecked:
                     # Rubber Sheeting
                     shiftVectVectLayer: QgsVectorLayer = myGBL['shiftVectVectLayer']
+                    numSV = readInSTT_VectorVector(self, shiftVectVectLayer, **myGBL)
+                    with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
+                        outPGS_file.write("readInSTT_VectorVector reports: "  + str(numSV) + '\n')
+                        outPGS_file.close()
+                    if numSV == 0:
+                        self.iface.messageBar().pushMessage("Failure", "no ShiftVectors", level=Qgis.Warning, duration=10)
+                        return False
                 elif self.dlg.toolBox_Choice.currentIndex() == 1:
-                    print("Similarity Transformation")
+                    print("Two Point Transformation")
+                elif self.dlg.toolBox_Choice.currentIndex() == 1:
+                    print("Local Two Point Transformation")
                 else:
                     self.iface.messageBar().pushMessage(shiftVectVectName, "was NOT Found!!!", level=Qgis.Warning, duration=10)
-                    return False
-
-    
-                numSV = readInSTT_VectorVector(self, shiftVectVectLayer, **myGBL)
-                with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
-                    outPGS_file.write("readInSTT_VectorVector reports: "  + str(numSV) + '\n')
-                    outPGS_file.close()
-
-                if numSV == 0:
-                    self.iface.messageBar().pushMessage("Failure", "no ShiftVectors", level=Qgis.Warning, duration=10)
                     return False
 
                 # report_file.write("There are " + str(iface.layerTreeView().selectedLayers().count()) + " Selected Themes" + '\n')
@@ -625,6 +624,34 @@ def showProjectFile(self):
                     myGBL.update({'ScaleFactor': lines[14].replace('\n','').split('=')[1]}) 
                     self.dlg.tb_ScaleFactor.setText(lines[14].replace('\n','').split('=')[1])
 
+
+                if len(lines) > 15:
+                    myGBL.update({'FromE_2': lines[15].replace('\n','').split('=')[1]}) 
+                    self.dlg.tb_FromE_2.setText(lines[15].replace('\n','').split('=')[1])
+                if len(lines) > 16:
+                    myGBL.update({'FromN_2': lines[16].replace('\n','').split('=')[1]}) 
+                    self.dlg.tb_FromN_2.setText(lines[16].replace('\n','').split('=')[1])
+                if len(lines) > 17:
+                    myGBL.update({'ToE_2': lines[17].replace('\n','').split('=')[1]}) 
+                    self.dlg.tb_ToE_2.setText(lines[17].replace('\n','').split('=')[1])
+                if len(lines) > 18:
+                    myGBL.update({'ToN_2': lines[18].replace('\n','').split('=')[1]}) 
+                    self.dlg.tb_ToN_2.setText(lines[18].replace('\n','').split('=')[1])
+                if len(lines) > 19:
+                    myGBL.update({'RotnDecDeg_2': lines[19].replace('\n','').split('=')[1]}) 
+                    self.dlg.tb_RotnDecDeg_2.setText(lines[19].replace('\n','').split('=')[1])
+                if len(lines) > 20:
+                    myGBL.update({'ScaleFactor_2': lines[20].replace('\n','').split('=')[1]}) 
+                    self.dlg.tb_ScaleFactor_2.setText(lines[20].replace('\n','').split('=')[1])
+
+                if len(lines) > 21:
+                    SRID_Local = lines[21].replace('\n','').split('=')[1]
+                    self.dlg.mQgsProjectionSelectionWidget_LclXY.setCrs(QgsCoordinateReferenceSystem(SRID_Table))
+                    myGBL.update({'LocalSRID': SRID_Local}) 
+
+
+
+
             QGeomTypes = [("Point", QgsWkbTypes.PointGeometry, QgsWkbTypes.Point),
                 ("LineString", QgsWkbTypes.LineGeometry, QgsWkbTypes.LineString),
                 ("Polygon", QgsWkbTypes.PolygonGeometry, QgsWkbTypes.Polygon),
@@ -770,10 +797,20 @@ def getSimilarityTransformXY(xyStrSSV: str):
     myBear = myBearingDeg(float(xyStrSSV.split(" ")[0]), float(xyStrSSV.split(" ")[1]),float(myGBL['FromE']), float(myGBL['FromN']))
     p = [float(xyStrSSV.split(" ")[0]), float(xyStrSSV.split(" ")[1])]
     q = [float(myGBL['FromE']), float(myGBL['FromN'])]
-    myDist = math.dist(p, q)
+    myDist = math.dist(p, q) *  float(myGBL['ScaleFactor'])
     myBearRad = math.radians(float(myBear) + float(myGBL['RotnDecDeg']))
     x = float(myGBL['ToE']) + math.sin(myBearRad) * float(myDist)
     y = float(myGBL['ToN']) + math.cos(myBearRad) * float(myDist)
+    return str(x) + " " + str(y)
+
+def getSimilarityTransformLocalXY(xyStrSSV: str):
+    myBear = myBearingDeg(float(xyStrSSV.split(" ")[0]), float(xyStrSSV.split(" ")[1]),float(myGBL['FromE_2']), float(myGBL['FromN_2']))
+    p = [float(xyStrSSV.split(" ")[0]), float(xyStrSSV.split(" ")[1])]
+    q = [float(myGBL['FromE_2']), float(myGBL['FromN_2'])]
+    myDist = math.dist(p, q) *  float(myGBL['ScaleFactor_2'])
+    myBearRad = math.radians(float(myBear) + float(myGBL['RotnDecDeg_2']))
+    x = float(myGBL['ToE_2']) + math.sin(myBearRad) * float(myDist)
+    y = float(myGBL['ToN_2']) + math.cos(myBearRad) * float(myDist)
     return str(x) + " " + str(y)
 
 def getRubberSheetedXY(xyStrSSV: str):
@@ -899,16 +936,20 @@ def rubbersheetWKT(wktStr: str, routine2Call: int, LclFileName: str):
                 adjStr = getRubberSheetedXY(curStr)
             elif routine2Call == 1:
                 adjStr = getSimilarityTransformXY(curStr)
+            elif routine2Call == 1:
+                adjStr = getSimilarityTransformLocalXY(curStr)
 
             wktUpg = wktUpg.replace("(" + curStr + ")", "(" + adjStr + ")")
             wktUpg = wktUpg.replace("(" + curStr + ",", "(" + adjStr + ",")
             wktUpg = wktUpg.replace("," + curStr + ")", "," + adjStr + ")")
             wktUpg = wktUpg.replace("," + curStr + ",", "," + adjStr + ",")
-            if x <= 1:
-                with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
-                    outPGS_file.write("In rubbersheetWKT! wktStr: " + wktStr + '\n')
-                    outPGS_file.write("In rubbersheetWKT! wktUpg: " + wktUpg + '\n')
-                    outPGS_file.close()
+            wktUpg = wktUpg.replace("(" + curStr + " ", "(" + adjStr + " ") # 3D and M
+            wktUpg = wktUpg.replace("," + curStr + " ", "," + adjStr + " ")
+            #if x <= 1:
+            #    with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
+            #        outPGS_file.write("In rubbersheetWKT! wktStr: " + wktStr + '\n')
+            #        outPGS_file.write("In rubbersheetWKT! wktUpg: " + wktUpg + '\n')
+            #        outPGS_file.close()
         return wktUpg
     except Exception as error:
         with open(LclFileName, 'a') as log_file:
@@ -938,6 +979,8 @@ def import_raw_theme(self, aLayer: QgsVectorLayer, **myGBL):
         layername = layername + "_rs"
     elif self.dlg.toolBox_Choice.currentIndex() == 1:
         layername = layername + "_tp"
+    elif self.dlg.toolBox_Choice.currentIndex() == 2:
+        layername = layername + "_ltp"
     themeSRID = str(vl.sourceCrs())
     themeSRID = themeSRID.replace("<QgsCoordinateReferenceSystem: ","").replace(">","").replace("EPSG:","")
     tableSRID = myGBL['tableSRID'].replace("EPSG:","")
@@ -1124,6 +1167,8 @@ def import_raw_theme(self, aLayer: QgsVectorLayer, **myGBL):
 
         valStr = ""
         fromCRS = vl.sourceCrs()
+        if self.dlg.toolBox_Choice.currentIndex() == 2:
+            fromCRS = QgsCoordinateReferenceSystem(myGBL['LocalSRID'])
         destCRS = QgsCoordinateReferenceSystem(myGBL['tableSRID'])
         ct = QgsCoordinateTransform(fromCRS, destCRS, QgsProject.instance())
         
@@ -1131,7 +1176,8 @@ def import_raw_theme(self, aLayer: QgsVectorLayer, **myGBL):
             ncount = ncount + 1
             if ncount <= 2000:
                 geom = f.geometry()
-                geom.transform(ct)
+                if self.dlg.toolBox_Choice.currentIndex() != 2:
+                    geom.transform(ct)
                 geom_asWkt = geom.asWkt()
 
                 if self.dlg.toolBox_Choice.currentIndex() == 0 and self.dlg.CB_DoRubberSheeting.isChecked:
@@ -1142,10 +1188,22 @@ def import_raw_theme(self, aLayer: QgsVectorLayer, **myGBL):
                     geom_asWkt = rubbersheetWKT(geom_asWkt, 0, myGBL['LogFileName'])
                 elif self.dlg.toolBox_Choice.currentIndex() == 1:
                     with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
-                        outPGS_file.write("was geom_asWkt! (Sim): " + '\n')
+                        outPGS_file.write("was geom_asWkt! (TP): " + '\n')
                         outPGS_file.write(geom_asWkt + '\n')
                         outPGS_file.close()
                     geom_asWkt = rubbersheetWKT(geom_asWkt, 1, myGBL['LogFileName'])
+                elif self.dlg.toolBox_Choice.currentIndex() == 2:
+                    with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
+                        outPGS_file.write("was geom_asWkt! (LTP): " + '\n')
+                        outPGS_file.write(geom_asWkt + '\n')
+                        outPGS_file.close()
+                    geom_asWkt = rubbersheetWKT(geom_asWkt, 2, myGBL['LogFileName'])
+                    #f3.setGeometry(QgsGeometry.fromWkt('MultiPoint(7 8)'))
+                    geom.setGeometry(QgsGeometry.fromWkt("'" + geom_asWkt + "'"))
+                    geom.transform(ct)
+                    geom_asWkt = geom.asWkt()
+
+
 
                 with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
                     outPGS_file.write("now geom_asWkt!: " + '\n')
@@ -1818,7 +1876,16 @@ def my_Save_Project_File(self):
             line = line + 'ToN=' + self.dlg.tb_ToN.text() + '\n'
             line = line + 'RotnDecDeg=' + self.dlg.tb_RotnDecDeg.text() + '\n'
             line = line + 'ScaleFactor=' + self.dlg.tb_ScaleFactor.text() + '\n'
-
+            line = line + 'FromE_2=' + self.dlg.tb_FromE_2.text() + '\n'
+            line = line + 'FromN_2=' + self.dlg.tb_FromN_2.text() + '\n'
+            line = line + 'ToE_2=' + self.dlg.tb_ToE_2.text() + '\n'
+            line = line + 'ToN_2=' + self.dlg.tb_ToN_2.text() + '\n'
+            line = line + 'RotnDecDeg_2=' + self.dlg.tb_RotnDecDeg_2.text() + '\n'
+            line = line + 'ScaleFactor_2=' + self.dlg.tb_ScaleFactor_2.text() + '\n'
+            localSRID = str(self.dlg.mQgsProjectionSelectionWidget_LclXY.crs())
+            localSRID = localSRID.replace("<QgsCoordinateReferenceSystem: ","").replace(">","")
+            line = line + 'localSRID=' + localSRID + '\n'
+            
 
             conf_file.write(line)
             conf_file.close()

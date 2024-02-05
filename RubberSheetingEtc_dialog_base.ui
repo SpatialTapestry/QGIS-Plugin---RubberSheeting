@@ -277,7 +277,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>See VectorThemes2Databases.html for full support.</string>
+     <string>See RubberSheetingEtc.html for full support.</string>
     </property>
    </widget>
   </widget>
@@ -325,14 +325,15 @@ Connection,
   <widget class="QLabel" name="label_8">
    <property name="geometry">
     <rect>
-     <x>240</x>
-     <y>320</y>
-     <width>181</width>
-     <height>17</height>
+     <x>280</x>
+     <y>299</y>
+     <width>141</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="text">
-    <string>Save Geom field with SRID:</string>
+    <string>&quot;Save as SRID&quot; for 
+ the Geom field:</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_5">
@@ -471,7 +472,7 @@ Connection,
       <x>0</x>
       <y>0</y>
       <width>391</width>
-      <height>469</height>
+      <height>438</height>
      </rect>
     </property>
     <attribute name="label">
@@ -508,11 +509,11 @@ Connection,
       <x>0</x>
       <y>0</y>
       <width>391</width>
-      <height>469</height>
+      <height>438</height>
      </rect>
     </property>
     <attribute name="label">
-     <string>Two Point Transformation</string>
+     <string>Two Point Transformation - known CRS/SRID</string>
     </attribute>
     <widget class="QLabel" name="label_13">
      <property name="geometry">
@@ -684,7 +685,7 @@ Connection,
       <string>0</string>
      </property>
      <property name="maxLength">
-      <number>5</number>
+      <number>10</number>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -712,14 +713,275 @@ Connection,
     <widget class="QLabel" name="label_19">
      <property name="geometry">
       <rect>
-       <x>50</x>
+       <x>20</x>
        <y>190</y>
-       <width>261</width>
+       <width>311</width>
        <height>20</height>
       </rect>
      </property>
      <property name="text">
-      <string>X and Y are in the &quot;save as&quot; SRID!</string>
+      <string>X and Y above are in the &quot;Save as SRID&quot;!</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_20">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>230</y>
+       <width>271</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>NOTE: Selected Themes MUST have 
+defined  CRS/SRID/EPSG.</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="page_3">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>391</width>
+      <height>438</height>
+     </rect>
+    </property>
+    <attribute name="label">
+     <string>Two Point Transformation - Local Coordinates</string>
+    </attribute>
+    <widget class="QLineEdit" name="tb_RotnDecDeg_2">
+     <property name="geometry">
+      <rect>
+       <x>230</x>
+       <y>130</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+     <property name="maxLength">
+      <number>10</number>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="tb_ScaleFactor_2">
+     <property name="geometry">
+      <rect>
+       <x>230</x>
+       <y>160</y>
+       <width>113</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>1</string>
+     </property>
+     <property name="maxLength">
+      <number>32</number>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_22">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>40</y>
+       <width>181</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>From Northing:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_23">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>190</y>
+       <width>291</width>
+       <height>161</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>NOTE: The Local XY are assumed to be
+Metres, and so the CRS/SRID above
+must also be a Metric Projection.
+
+The Local XY of the Active Themes
+are 'transformed' as above, assigned
+the CRS/SRID below, then saved to the 
+Database in the &quot;Save as SRID&quot;</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_24">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>10</y>
+       <width>181</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>From Easting:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="tb_FromN_2">
+     <property name="geometry">
+      <rect>
+       <x>230</x>
+       <y>40</y>
+       <width>113</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+     <property name="maxLength">
+      <number>32</number>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="tb_ToN_2">
+     <property name="geometry">
+      <rect>
+       <x>230</x>
+       <y>100</y>
+       <width>113</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+     <property name="maxLength">
+      <number>32</number>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_25">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>100</y>
+       <width>181</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>To Northing:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_26">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>130</y>
+       <width>141</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Rotation (Dec Deg):</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_27">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>70</y>
+       <width>181</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>To Easting:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="tb_FromE_2">
+     <property name="geometry">
+      <rect>
+       <x>230</x>
+       <y>10</y>
+       <width>113</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+     <property name="maxLength">
+      <number>32</number>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_28">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>160</y>
+       <width>111</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Scale Factor:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="tb_ToE_2">
+     <property name="geometry">
+      <rect>
+       <x>230</x>
+       <y>70</y>
+       <width>113</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+     <property name="maxLength">
+      <number>32</number>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QgsProjectionSelectionWidget" name="mQgsProjectionSelectionWidget_LclXY">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>360</y>
+       <width>191</width>
+       <height>27</height>
+      </rect>
      </property>
     </widget>
    </widget>

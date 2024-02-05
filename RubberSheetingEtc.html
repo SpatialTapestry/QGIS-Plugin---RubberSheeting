@@ -142,22 +142,39 @@
         in the street sewer line - i.e. Vertical Topology), etc. As mentioned
         elsewhere, if you have these types of geometries, please contact the
         author who can help through a consultation process.</p>
-      <h2>Two Point Transformation Instructions:</h2>
-      <p>To access this, click "Two Point Transformation" at the bottom right of
-        the form.</p>
-      <p>A Two Point Transformation can be useful when importing geometries such
-        as airports, buildings, bridges, interchanges, etc, which are often in a
-        Local Coordinate System.</p>
+      <h2>Two Point Transformation Instructions - with known CRS/SRIDs:</h2>
+      <p>To access this, click "Two Point Transformation - known CRS/SRID" at
+        the bottom right of the form.</p>
+      <p>A Two Point Transformation can be useful when geometries are found to
+        be in the wrong location. Simply export those features to say a
+        GeoPackage, open the themes in QGIS, make them active, set the
+        transformation parameters and import them back into new themes in your
+        database, and use QGIS to replace the original features.</p>
       <div style="text-align: center;"><img src="file:///home/r/.local/share/QGIS/QGIS3/profiles/default/python/plugins/rubbersheeting/RubberSheeting2.png"
           alt="Two Point Transformation" title="Two Point Transformation"></div>
-      <p>A good way to do this is to get the coordinates of one corner in the
-        the source theme, get the coordinate of the same point in the GIS
-        Coordinate System, work out any rotation and scale factors, and enter
-        these in the form above.</p>
+      <p>Another use for this is to reproject themes and store them in your
+        database.</p>
       <p>Simply make the themes active and click "Process the QGIS Selected
         Themes" button to write out the Rubber Sheeted geometries to the
         destination. Note that the theme names will have an "_tp" appended to
         the theme name.</p>
+      <h2>Two Point Transformation Instructions - Local Coordinates:</h2>
+      <p>To access this, click "Two Point Transformation - Local Coordinates" at
+        the bottom right of the form.</p>
+      <p>A Two Point Transformation can be useful when importing geometries such
+        as airports, buildings, bridges, interchanges, landXML Survey Plans,
+        etc, which are often in a Local Coordinate System.</p>
+      <div style="text-align: center;"><img src="RubberSheeting3.png" alt="RubberSheeting3"
+          title="RubberSheeting3"></div>
+      <p>A good way to do this is to get the coordinates of one corner in the
+        the source theme, get the coordinate of the same point in the GIS
+        Coordinate System, work out any rotation and scale factors, and enter
+        these in the form above. </p>
+      <p>Simply make the themes active and click "Process the QGIS Selected
+        Themes" button to write out the Rubber Sheeted geometries to the
+        destination. Note that the theme names will have an "_ltp" appended to
+        the theme name.</p>
+      <h2></h2>
       <h2>Installation Instructions:</h2>
       <p>QGIS 3.28 is recommended. Do not install Python, instead we will use
         the Python installed with QGIS. (Installing Python 3.12 on Windows
