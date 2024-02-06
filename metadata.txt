@@ -14,7 +14,7 @@ qgisMinimumVersion=3.28
 description=Provides Rubber Sheeting and Two Point Transformations, storing to PostGIS, Oracle and MS SQL
 about=NOTE!!! This plugin will crash on initial download as there are missing Python Connectors to the databases. See "RubberSheetingETC.html" in the plugin folder for User and Installation instructions. Python Database Connectors: psycopg2, oracledb, pyodbc,{Devart ODBC Driver for Oracle},{Devart ODBC Driver for SQL Server}
 
-version=0.2
+version=0.3
 
 # Optional items:
 
