@@ -286,7 +286,7 @@ class RubberSheetingEtc:
             if myGBL['DatabaseType'] == "PGS":
                 connPGS = returnPGS(**myGBL)
                 cursor = connPGS.cursor()
-                cursor.execute(sqlStr.replace("NUMBER","INTEGER"))
+                cursor.execute(sqlStr.replace("NUMBER","INTEGER").replace("CHAR2","CHAR"))
                 self.iface.messageBar().pushMessage(
                     "Success", myGBL['DatabaseType'] + " create table called",
                     level=Qgis.Success, duration=10)
@@ -394,7 +394,7 @@ class RubberSheetingEtc:
                         return False
                 elif self.dlg.toolBox_Choice.currentIndex() == 1:
                     print("Two Point Transformation")
-                elif self.dlg.toolBox_Choice.currentIndex() == 1:
+                elif self.dlg.toolBox_Choice.currentIndex() == 2:
                     print("Local Two Point Transformation")
                 else:
                     self.iface.messageBar().pushMessage(shiftVectVectName, "was NOT Found!!!", level=Qgis.Warning, duration=10)
@@ -646,7 +646,7 @@ def showProjectFile(self):
 
                 if len(lines) > 21:
                     SRID_Local = lines[21].replace('\n','').split('=')[1]
-                    self.dlg.mQgsProjectionSelectionWidget_LclXY.setCrs(QgsCoordinateReferenceSystem(SRID_Table))
+                    self.dlg.mQgsProjectionSelectionWidget_LclXY.setCrs(QgsCoordinateReferenceSystem(SRID_Local))
                     myGBL.update({'LocalSRID': SRID_Local}) 
 
 
@@ -925,10 +925,10 @@ def rubbersheetWKT(wktStr: str, routine2Call: int, LclFileName: str):
         wktStr = StripOGCFeatType(wktStr)
         wktStr = wktStr.replace("),(", " ").replace("(", "").replace(")", "")
         wktStr = wktStr.replace("(", "").replace(")", "").replace(", ", ",")
-        with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
-            outPGS_file.write(wktUpg + '\n')
-            outPGS_file.write(wktStr + '\n')
-            outPGS_file.close()
+        #with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
+        #    outPGS_file.write(wktUpg + '\n')
+        #    outPGS_file.write(wktStr + '\n')
+        #    outPGS_file.close()
         wktArr = wktStr.split(",")
         for x in range(len(wktArr)):
             curStr = wktArr[x]
@@ -936,7 +936,7 @@ def rubbersheetWKT(wktStr: str, routine2Call: int, LclFileName: str):
                 adjStr = getRubberSheetedXY(curStr)
             elif routine2Call == 1:
                 adjStr = getSimilarityTransformXY(curStr)
-            elif routine2Call == 1:
+            elif routine2Call == 2:
                 adjStr = getSimilarityTransformLocalXY(curStr)
 
             wktUpg = wktUpg.replace("(" + curStr + ")", "(" + adjStr + ")")
@@ -945,11 +945,11 @@ def rubbersheetWKT(wktStr: str, routine2Call: int, LclFileName: str):
             wktUpg = wktUpg.replace("," + curStr + ",", "," + adjStr + ",")
             wktUpg = wktUpg.replace("(" + curStr + " ", "(" + adjStr + " ") # 3D and M
             wktUpg = wktUpg.replace("," + curStr + " ", "," + adjStr + " ")
-            #if x <= 1:
-            #    with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
-            #        outPGS_file.write("In rubbersheetWKT! wktStr: " + wktStr + '\n')
-            #        outPGS_file.write("In rubbersheetWKT! wktUpg: " + wktUpg + '\n')
-            #        outPGS_file.close()
+        #    if x <= 10:
+        #        with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
+        #            outPGS_file.write("In rubbersheetWKT! wktStr: " + wktStr + '\n')
+        #            outPGS_file.write("In rubbersheetWKT! wktUpg: " + wktUpg + '\n')
+        #            outPGS_file.close()
         return wktUpg
     except Exception as error:
         with open(LclFileName, 'a') as log_file:
@@ -1099,6 +1099,13 @@ def import_raw_theme(self, aLayer: QgsVectorLayer, **myGBL):
                     sqlStr = sqlStr + lc_FldNm + " NUMBER(38)," + chr(141)
                 elif DatabaseType == "MSS":
                     sqlStr = sqlStr + lc_FldNm + " smallint," + '\n'
+            elif field.typeName() == "Boolean":
+                if DatabaseType == "PGS":
+                    sqlStr = sqlStr + lc_FldNm + " boolean," + '\n'
+                elif DatabaseType == "ORA" or DatabaseType == "ORD":
+                    sqlStr = sqlStr + lc_FldNm + " boolean," + chr(141)
+                elif DatabaseType == "MSS":
+                    sqlStr = sqlStr + lc_FldNm + " boolean," + '\n'
             elif field.typeName() == "String":
                 if DatabaseType == "PGS": #  + 10 as I have found GPKG strings longer than the field.length
                     sqlStr = sqlStr + lc_FldNm + " varchar(" + str(field.length() + 10) + ")," + '\n'
@@ -1198,13 +1205,20 @@ def import_raw_theme(self, aLayer: QgsVectorLayer, **myGBL):
                         outPGS_file.write(geom_asWkt + '\n')
                         outPGS_file.close()
                     geom_asWkt = rubbersheetWKT(geom_asWkt, 2, myGBL['LogFileName'])
-                    #f3.setGeometry(QgsGeometry.fromWkt('MultiPoint(7 8)'))
-                    geom.setGeometry(QgsGeometry.fromWkt("'" + geom_asWkt + "'"))
-                    geom.transform(ct)
-                    geom_asWkt = geom.asWkt()
-
-
-
+                    with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
+                        outPGS_file.write("cccc rubbersheetWKT geom_asWkt! (LTP): " + '\n')
+                        outPGS_file.write(geom_asWkt + '\n')
+                        outPGS_file.close()
+                    featT = QgsFeature()
+                    featT.setGeometry( QgsGeometry.fromWkt(geom_asWkt))
+                    geomT = featT.geometry()
+                    geomT.transform(ct)
+                    geom_asWkt = geomT.asWkt()
+                    with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
+                        outPGS_file.write("yyyy geomT.transform(ct) geomT.asWkt()! (LTP): " + '\n')
+                        outPGS_file.write(geom_asWkt  + '\n')
+                        outPGS_file.close()
+                    
                 with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
                     outPGS_file.write("now geom_asWkt!: " + '\n')
                     outPGS_file.write(geom_asWkt + '\n')
@@ -1253,6 +1267,8 @@ def import_raw_theme(self, aLayer: QgsVectorLayer, **myGBL):
                             updStr = updStr + lc_FldNm + "=" + str(f[field.name()]) + ","
                         elif field.typeName() == "Integer16":
                             updStr = updStr + lc_FldNm + "=" + str(f[field.name()]) + ","
+                        elif field.typeName() == "Boolean":
+                            updStr = updStr + lc_FldNm + "=" + str(f[field.name()]) + ","
                         elif field.typeName() == "String":
                             # specChar = "( ) - & @ * $ | % "
                             oraStr = str(f[field.name()]).replace("'","''").replace(chr(34),chr(134))
@@ -1268,6 +1284,8 @@ def import_raw_theme(self, aLayer: QgsVectorLayer, **myGBL):
                             oraStr = oraStr.replace("%",chr(135) + "%" + chr(135))
                             oraStr = oraStr.replace(chr(135),"'||'")
                             oraStr = oraStr.replace(chr(134),"'||'" + chr(34) + "'||'")
+                            if len(oraStr) > field.length():
+                                oraStr = oraStr[0: field.length()]
                             updStr = updStr + lc_FldNm + "='" + oraStr + "',"
                         elif field.typeName() == "Date":
                             DATETIME_FORMAT = 'yyyy-MM-dd'
@@ -1328,6 +1346,8 @@ def import_raw_theme(self, aLayer: QgsVectorLayer, **myGBL):
                             valStr = valStr + str(f[field.name()]) + ","
                         elif field.typeName() == "Integer16":
                             valStr = valStr + str(f[field.name()]) + ","
+                        elif field.typeName() == "Boolean":
+                            valStr = valStr + str(f[field.name()]) + ","
                         elif field.typeName() == "String":
                             if DatabaseType == "ORA" or DatabaseType == "ORD":
                             # specChar = "( ) - & @ * $ | % "
@@ -1344,9 +1364,14 @@ def import_raw_theme(self, aLayer: QgsVectorLayer, **myGBL):
                                 oraStr = oraStr.replace("%",chr(135) + "%" + chr(135))
                                 oraStr = oraStr.replace(chr(135),"'||'")
                                 oraStr = oraStr.replace(chr(134),"'||'" + chr(34) + "'||'")
+                                if len(oraStr) > field.length():
+                                    oraStr = oraStr[0: field.length()]
                                 valStr = valStr + "'" + oraStr + "',"
-                            else:                          
-                                valStr = valStr + "'" + str(f[field.name()]).replace("'","''") + "',"
+                            else:
+                                curStr = str(f[field.name()]).replace("'","''")
+                                if len(curStr) > field.length():
+                                    curStr = curStr[0: field.length()]
+                                valStr = valStr + "'" + curStr + "',"
                         elif field.typeName() == "Date":
                             # valStr = valStr + "'" + format_date(f[field.name()],DATETIME_FORMAT) + "',"
                             DATETIME_FORMAT = 'yyyy-MM-dd'
