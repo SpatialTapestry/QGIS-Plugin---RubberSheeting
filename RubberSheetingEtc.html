@@ -280,6 +280,222 @@
           title="Transformed Local Coord Survey Plan"></div>
       <div style="text-align: center;"><br>
       </div>
+      <div style="text-align: left;"><br>
+      </div>
+      <div style="text-align: left;">
+        <h2>Specific Spatial Upgrade Items NOT Addressed by this RubberSheeting
+          Algorithm</h2>
+      </div>
+      <div style="text-align: left;">
+        <div class="Section1">
+          <meta http-equiv="content-type" content="text/html; charset=utf-8">
+          <h3><span lang="EN-AU">Maintain Straight Lines -&gt; SL Tol in (cm):
+              (and) Straighten
+              -&gt; Max Deflection Angle (Deg):</span></h3>
+          <p class="MsoNormal"><span lang="EN-AU">&nbsp;SAManager can detect
+              those parts of
+              LineString and MultiLineString themes that are ‘roughly’ straight,
+              meaning that
+              there is a set of consecutive points with a Peuker Douglas
+              tolerance within the
+              specified value, and where the maximum deflection angle is within
+              the specified
+              value. Once these straight lines are detected, these straight
+              pieces can be
+              maintained and straightened.</span></p>
+          <div style="text-align: center;"><a href="Remove%20Spikes"><img src="MaintainStraightLines.png"
+                alt="Maintain Straight Lines" title="Maintain Straight Lines"></a></div>
+          <p class="MsoNormal"><span lang="EN-AU">Much depends on the type of
+              theme being
+              processed.</span></p>
+          <p class="MsoNormal"><span lang="EN-AU">If the theme is a cadastral
+              layer, then
+              there are many examples in older built up areas where nothing
+              should be done to
+              this line, i.e. it should remain where the black line is. E.g.
+              when a two lot
+              strata is being surveyed for subdivision the surveyor must pick up
+              the centre
+              of the common walls, but the walls were put in by a bricklayer and
+              not
+              necessarily straight, and can step sideways sometimes to avoid an
+              obstacle.</span></p>
+          <p class="MsoNormal"><span lang="EN-AU">If the theme is sewerage main,
+              then almost
+              certainly the black line should be converted to the red line, as
+              sewerage mains
+              are precast straight and are surveyed to be straight in the
+              construction phase.</span></p>
+          <h3><span lang="EN-AU">&lt;- Maintain Implied Vertical Topology</span></h3>
+          <p class="MsoNormal"><span lang="EN-AU">&nbsp;SAManager can detect and
+              maintain
+              LineString start and end points which appear to be on top of
+              another LineString
+              theme, but where the start/end point is not in the other theme. An
+              example of
+              this would be a water feeder theme going from the mains into the
+              lots, but
+              where a water mains only includes its own start and end and bend
+              points.</span></p>
+          <div style="text-align: center;"><a href="Remove%20Spikes"><img src="file:///home/r/.local/share/QGIS/QGIS3/profiles/default/python/plugins/rubbersheeting/MaintainImpliedVerticalTopology.png"
+                alt="Maintain Implied Vertical Topology" title="Maintain Implied Vertical Topology"></a></div>
+          <p class="MsoNormal"><span lang="EN-AU">In the diagram above, the
+              mains theme (<b>Black</b>)
+              has the 2 nodes at <b>A</b> and <b>B</b>, nothing at <b><span style="color:
+#0070C0">b</span></b> or any of the other <span style="color:#0070C0">side
+                sewerage lines</span>. However it is imperative for the <span style="color:
+#0070C0">side sewerage lines</span> to remain on top of the mains theme no
+              matter the shifts.</span></p>
+          <p class="MsoNormal"><span lang="EN-AU">&nbsp;</span><span lang="EN-AU">&lt;-
+              Maintain Intersection Bearing - (*** not
+              proportion***)</span></p>
+          <p class="MsoNormal"><span lang="EN-AU">&nbsp;Some themes such as
+              water feeder/lateral
+              pipes are often built at right angles from the mains to reduce
+              costs. The often
+              random direction and size of shift vectors along road frontages
+              and around the
+              lots will tend to rotate these lateral pipes. This option attempts
+              to move the
+              intersection point along the mains to keep the original
+              intersection bearing.</span></p>
+          <p class="MsoNormal"><span lang="EN-AU">There are limitations, as the
+              intersection
+              cannot be moved past the mains start or end points, or past any
+              bend point, or
+              past any other intersection point. Doing so would cause a ‘Z’
+              topology.</span></p>
+          <div style="text-align: center;"><a href="Remove%20Spikes"><img src="file:///home/r/.local/share/QGIS/QGIS3/profiles/default/python/plugins/rubbersheeting/MaintainIntersectionBearing.png"
+                alt="Maintain Intersection Bearing" title="Maintain Intersection Bearing"></a></div>
+          <p class="MsoNormal"><span lang="EN-AU">With the two Shift Vectors on
+              the left, the
+              angle at <b>a</b> would not be maintained. With this option the
+              angle is
+              maintained at <b><span style="color:#FFC000">b</span></b>.</span></p>
+          <h3><span lang="EN-AU">Scaled LineString Object</span></h3>
+          <p class="MsoNormal"><span lang="EN-AU">&nbsp;The geometric
+              manipulation for this
+              treatment is complicated, but generally works well in practice.</span></p>
+          <p class="MsoNormal"><span lang="EN-AU">Some themes such as water and
+              sewer mains
+              can benefit from this processing.</span></p>
+          <p class="MsoNormal"><span lang="EN-AU">Linestrings less than 400-500m
+              are treated
+              to a 2 point transformation using the start and end point.</span></p>
+          <p class="MsoNormal"><span lang="EN-AU">Linestrings longer than this
+              often have
+              issues as the road frontage corners often shift in a way that
+              cause undesirable
+              offsets, and as such a 2 point transformation is not applied. </span></p>
+          <p class="MsoNormal"><span lang="EN-AU">The offset to the nearest road
+              boundary is
+              calculated during the data loading process. This offset is used to
+              nudge points
+              back to the original offset during each iteration. This competes
+              with all the
+              other processes, but does have a good influence on the placement
+              of these
+              linestring features.</span></p>
+          <p class="MsoNormal"><span lang="EN-AU">The nett result of this
+              processing might be
+              best described as adding a certain stiffness to the linestring,
+              generally
+              keeping the shape but accommodating road frontages that have
+              changed more than
+              most normally do.</span></p>
+          <h3><span lang="EN-AU">Snap this Theme To 'Snap to Themes'</span></h3>
+          <p class="MsoNormal"><span lang="EN-AU">&nbsp;Some themes, such as
+              suburbs, LGA and other
+              Admin themes, often have missing/additional nodes along the
+              Destination Landbase.</span></p>
+          <p class="MsoNormal"><span lang="EN-AU">SAManager can detect this and
+              do the
+              necessary edits to have the theme co-incident with the Target Snap
+              to Themes. <br>
+            </span></p>
+          <h3><span lang="EN-AU">This Theme Is a target 'Snap to Theme'</span></h3>
+          <p class="MsoNormal"><span lang="EN-AU">This is usually only the
+              Destination
+              Landbase. Suburb and other administration layers are often
+              initially derived by
+              merging cadastral/landbase parcels and doing any modification
+              necessary.</span></p>
+          <p class="MsoNormal"><span lang="EN-AU">As the cadastre evolves, these
+              layers are
+              often not maintained. When a new cadastre/landbase is derived via
+              an upgrade
+              project, nodes may be added or deleted or moved. Especially along
+              circular
+              arcs.</span></p>
+          <p class="MsoNormal"><span lang="EN-AU">The act of rubbersheeting
+              moves the points
+              to their new position but does not reconcile any topological
+              differences.
+              Setting this flag triggers this process to run after the upgrade
+              has been
+              completed. <br>
+            </span></p>
+          <h3><span lang="EN-AU">Remove Spikes -&gt; Tol (mm):</span></h3>
+          <p class="MsoNormal"><span lang="EN-AU">&nbsp;Spikes, ‘V’ and ‘Z’ like
+              shapes can be
+              created with the above ‘non-upgrade’ options, and often exist in
+              the original
+              geometry.</span></p>
+          <img src="RemoveSpikes.png" alt="Remove Spikes" title="Remove Spikes">
+          <h3><span lang="EN-AU">Rigid Object support for Polygons (only)</span></h3>
+          <p class="MsoNormal"><span lang="EN-AU">&nbsp;This set of parameters
+              defines how
+              SAManager finds and processes groups of features within the
+              current theme. The
+              features are defined by a field name and a value in that field.
+              E.g. The Field
+              name might be ‘GroupId’, and all the features with the value of
+              (say) ‘123’ are
+              treated as the one feature.</span></p>
+          <p class="MsoNormal"><span lang="EN-AU">Each point goes through the
+              IBG process,
+              being shifted by the shift vectors to give an adjusted coordinate.
+              The adjusted
+              coordinates for all the features within a group are compared with
+              the original
+              to compute an average X and Y shift, which is applied to all those
+              point. If ‘Allow
+              Rotation’ is checked, the two furthest apart points are used to
+              compute a
+              rotation. A Similarity Transformation is then applied to all those
+              points.</span></p>
+          <h4><span lang="EN-AU">Allow Rotation</span></h4>
+          <p class="MsoNormal"><span lang="EN-AU">This is set of the groups of
+              features can
+              be rotated.</span></p>
+          <h4><span lang="EN-AU">SD Group Field Name:</span></h4>
+          <p class="MsoNormal"><span lang="EN-AU">This is the field name of the
+              field holding
+              the group value.</span></p>
+          <h4><span lang="EN-AU">SD Group Name (*/value):</span></h4>
+          <p class="MsoNormal"><span lang="EN-AU">If there is a subset of the
+              group values
+              that should be processed, and not the other features, then this
+              can be used to
+              limit this processing to that subset. <br>
+            </span></p>
+          <h3><span lang="EN-AU">Rigid Polygon Object</span></h3>
+          <p class="MsoNormal"><span lang="EN-AU">&nbsp;In some situation the
+              original landbase has
+              unreasonable bends and the GIS Operator puts in the
+              Sewer/Water/Gas lines as
+              (near) straight features. During a normal rubbersheeting process,
+              the shift
+              vectors introduce unwanted bends in the utility themes. Extracting
+              the features
+              in those areas and putting them into a theme and setting this flag
+              will cause
+              those features to be far more rigid.</span></p>
+          <p class="MsoNormal"><span lang="EN-AU">The real features (due to
+              vertical topology)
+              are held rigid too, and greatly retain their original shape.</span></p>
+        </div>
+      </div>
       <h2></h2>
       <h2>Installation Instructions:</h2>
       <p>QGIS 3.28 is recommended. Do not install Python, instead we will use
