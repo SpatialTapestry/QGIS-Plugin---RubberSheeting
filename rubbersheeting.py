@@ -123,10 +123,11 @@ connDEV: pyodbc
 
 shiftVectVectName: str = "stt_vectorvector"
 shiftVectVectLayer: QgsVectorLayer
-g3g = list()
+shiftVectVectList = list()
 
-z3 = "000"
 myGBL = {}
+#myGBL.update({'ConFileName': os.path.expanduser( '~' ) + '/ST_SDL.Config'}) 
+#myGBL.update({'LogFileName': os.path.expanduser( '~' ) + '/aaa.log'}) 
 
 class RubberSheetingEtc:
     """QGIS Plugin Implementation."""
@@ -256,10 +257,10 @@ class RubberSheetingEtc:
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
-        icon_path = ':/plugins/my_rubbersheeting_Dev/resources/icon.png'
+        icon_path = ':/plugins/RubberSheetingEtc/icon.png'
         self.add_action(
             icon_path,
-            text=self.tr(u'Rubber Sheeting Etc Free'),
+            text=self.tr(u'Rubber Sheeting Etc'),
             callback=self.run,
             parent=self.iface.mainWindow())
 
@@ -320,7 +321,7 @@ class RubberSheetingEtc:
             error_obj = err.args
             QMessageBox.information(None, "Failure " + str(error_obj), err, QMessageBox.Ok, QMessageBox.Ok)
 
-    def a3a(self):
+    def select_btn_Drop_SelectedThemes(self):
         try:
             n2n = myGBL['n2n']
             o2o = myGBL['o2o']
@@ -337,11 +338,11 @@ class RubberSheetingEtc:
             with open(t1t, 'w') as log_file:
                 log_file.close
             with open(os.path.expanduser( '~' ) + "/sql._DeleteThemeReport", 'w') as delete_file:
-                for o3o in iface.layerTreeView().selectedLayers():
+                for SelLayer in iface.layerTreeView().selectedLayers():
                     svl:QgsVectorLayer
-                    svl = o3o
+                    svl = SelLayer
                     svlname = svl.name().lower()
-                    if o3o.type() == QgsMapLayer.VectorLayer:
+                    if SelLayer.type() == QgsMapLayer.VectorLayer:
                         layers = QgsProject.instance().mapLayers().values()
                         for layer in layers:
                             vl:QgsVectorLayer
@@ -350,10 +351,10 @@ class RubberSheetingEtc:
                             if layer.type() != QgsMapLayer.VectorLayer:
                                 continue
                             elif vlname == svlname:
-                                n3n = vl.name().lower().replace(".","_")
+                                layername = vl.name().lower().replace(".","_")
                                 if n2n == "PGS":
-                                    n3n = myGBL['PG_Schema'] + "." + n3n
-                                sqlStr = "DROP TABLE " + n3n
+                                    layername = myGBL['PG_Schema'] + "." + layername
+                                sqlStr = "DROP TABLE " + layername
                                 if o2o == "File" or o2o == "Both":
                                     delete_file.write(sqlStr + ";" + '\n')
                                 if o2o == "Serv" or o2o == "Both":
@@ -373,71 +374,53 @@ class RubberSheetingEtc:
        
     def b1b(self):
         try:
-            xyz = "ll"
             with open(os.path.expanduser( '~' ) + "/log._ImportThemeReport", 'w') as report_file:
                 report_file.close
-            wxy = "i"
-            whatIsGoingOn("Selected Themes are:")
-            for o3o in iface.layerTreeView().selectedLayers():
-                svl:QgsVectorLayer
-                svl = o3o
-                svlname = svl.name().lower()
-                whatIsGoingOn(svlname)
-            xyz  = wxy + xyz + wxy + "on"
-            whatIsGoingOn("End Selected Themes List\n")
-
-            abc = self.dlg.a44.text().replace("("," ").replace(")"," ").replace(" mi" + xyz, z3 + z3).split(" ")
-            whatIsGoingOn("Max Record Count per theme: " + abc[3])
-            whatIsGoingOn("DB Type : " + myGBL['n2n'])
-            whatIsGoingOn("Host:     " + self.dlg.PG_IPAddress.text())
-            whatIsGoingOn("Database: " + self.dlg.PG_DBName.text())
-            whatIsGoingOn("Port:     " + self.dlg.PG_Port.text())
-            whatIsGoingOn("Schema:   " + self.dlg.PG_SchemaName.text() + "\n")
-
-
-            if self.dlg.toolBox_Choice.currentIndex() == 0 and self.dlg.CB_DoRubberSheeting.isChecked:
-                shiftVectVectLayer: QgsVectorLayer = myGBL['shiftVectVectLayer']
-                numSV = e3e(self, shiftVectVectLayer, **myGBL)
-                if numSV == 0:
-                    QMessageBox.information(None, "Failure", "no ShiftVectors", QMessageBox.Ok, QMessageBox.Ok)
+                
+                if self.dlg.toolBox_Choice.currentIndex() == 0 and self.dlg.CB_DoRubberSheeting.isChecked:
+                    # Rubber Sheeting
+                    shiftVectVectLayer: QgsVectorLayer = myGBL['shiftVectVectLayer']
+                    numSV = readInSTT_VectorVector(self, shiftVectVectLayer, **myGBL)
+                    with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
+                        outPGS_file.write("readInSTT_VectorVector reports: "  + str(numSV) + '\n')
+                        outPGS_file.close()
+                    if numSV == 0:
+                        QMessageBox.information(None, "Failure", "no ShiftVectors", QMessageBox.Ok, QMessageBox.Ok)
+                        return False
+                elif self.dlg.toolBox_Choice.currentIndex() == 1:
+                    print("Two Point Transformation")
+                elif self.dlg.toolBox_Choice.currentIndex() == 2:
+                    print("Local Two Point Transformation")
+                else:
+                    QMessageBox.information(None,shiftVectVectName, "was NOT Found!!!", QMessageBox.Ok, QMessageBox.Ok)
                     return False
-            elif self.dlg.toolBox_Choice.currentIndex() == 1:
-                print("Two Point Transformation")
-            elif self.dlg.toolBox_Choice.currentIndex() == 2:
-                print("Local Two Point Transformation")
-            else:
-                QMessageBox.information(None,shiftVectVectName, "was NOT Found!!!", QMessageBox.Ok, QMessageBox.Ok)
-                return False
 
+                # report_file.write("There are " + str(iface.layerTreeView().selectedLayers().count()) + " Selected Themes" + '\n')
+                for SelLayer in iface.layerTreeView().selectedLayers():
+                    svl:QgsVectorLayer
+                    svl = SelLayer
+                    svlname = svl.name().lower()
+                    # report_file.write("Looking for Sel Theme " + svlname + '\n')
 
-            for o3o in iface.layerTreeView().selectedLayers():
-                svl:QgsVectorLayer
-                svl = o3o
-                svlname = svl.name().lower()
-
-                if o3o.type() == QgsMapLayer.VectorLayer:
-                    layers = QgsProject.instance().mapLayers().values()
-                    gotit = False
-                    for layer in layers:
-                        vl:QgsVectorLayer
-                        vl = layer
-                        vlname = vl.name().lower()
-                        if layer.type() != QgsMapLayer.VectorLayer:
-                            # Ignore this layer as it's not a vector
-                            continue
-                        elif layer.featureCount() == 0:
-                            # There are no features - skip
-                            continue
-                        elif vlname == svlname:
-                            gotit = True
-                            l1l(self, layer, **myGBL)
-
-            oldText = self.dlg.textEdit.toPlainText()
-            self.dlg.textEdit.setPlainText("NULL/Erroneous Geometry List!\n" + oldText)
-
-            wT = self.dlg.windowTitle()
-            if "_Fr" in wT:
-                QMessageBox.information(None,"Finished Processing...","Remember you can get an Unlimited Version at\nhttps://gismart.net/stores/spatialtapestry/", QMessageBox.Ok, QMessageBox.Ok)
+                    if SelLayer.type() == QgsMapLayer.VectorLayer:
+                        # report_file.write("Sel Theme is a QgsMapLayer.VectorLayer " + svlname + '\n')
+                        layers = QgsProject.instance().mapLayers().values()
+                        gotit = False
+                        for layer in layers: # + str(layer.parent()) + ", " 
+                            vl:QgsVectorLayer
+                            vl = layer
+                            vlname = vl.name().lower()
+                            # report_file.write("Looking at Theme " + vlname + '\n')
+                            if layer.type() != QgsMapLayer.VectorLayer:
+                                # Ignore this layer as it's not a vector
+                                continue
+                            elif layer.featureCount() == 0:
+                                # There are no features - skip
+                                continue
+                            elif vlname == svlname:
+                                # report_file.write("Got a match Sel Theme " + svlname + " " + vlname + '\n')
+                                gotit = True
+                                l1l(self, layer, **myGBL)
 
         except Exception as err:
             QMessageBox.information(None, "Failure loading theme", err, QMessageBox.Ok, QMessageBox.Ok)
@@ -445,26 +428,30 @@ class RubberSheetingEtc:
 
     def i1i(self):
         myGBL.update({'n2n': "PGS"}) 
-        myGBL.update({'ConFileName': os.path.expanduser( '~' ) + '/PGS_ST_Rbr.Config'}) 
-        self.dlg.a41.setText(myGBL['n2n'] + " and " + myGBL['o2o']) 
+        myGBL.update({'ConFileName': os.path.expanduser( '~' ) + '/PGS_ST_SDL.Config'}) 
+        #self.FWProjectFile.setText(myGBL['ConFileName'])
+        self.dlg.label_12.setText(myGBL['n2n'] + " and " + myGBL['o2o']) 
         m1m(self)
 
     def j1j(self):
         myGBL.update({'n2n': "ORA"}) 
-        myGBL.update({'ConFileName': os.path.expanduser( '~' ) + '/ORA_ST_Rbr.Config'}) 
-        self.dlg.a41.setText(myGBL['n2n'] + " and " + myGBL['o2o']) 
+        myGBL.update({'ConFileName': os.path.expanduser( '~' ) + '/ORA_ST_SDL.Config'}) 
+        #self.FWProjectFile.setText(myGBL['ConFileName'])
+        self.dlg.label_12.setText(myGBL['n2n'] + " and " + myGBL['o2o']) 
         m1m(self)
 
     def d1d(self):
         myGBL.update({'n2n': "ORD"}) 
-        myGBL.update({'ConFileName': os.path.expanduser( '~' ) + '/ORD_ST_Rbr.Config'}) 
-        self.dlg.a41.setText(myGBL['n2n'] + " and " + myGBL['o2o']) 
+        myGBL.update({'ConFileName': os.path.expanduser( '~' ) + '/ORD_ST_SDL.Config'}) 
+        #self.FWProjectFile.setText(myGBL['ConFileName'])
+        self.dlg.label_12.setText(myGBL['n2n'] + " and " + myGBL['o2o']) 
         m1m(self)
 
     def n1n(self):
         myGBL.update({'n2n': "MSS"}) 
-        myGBL.update({'ConFileName': os.path.expanduser( '~' ) + '/MSS_ST_Rbr.Config'}) 
-        self.dlg.a41.setText(myGBL['n2n'] + " and " + myGBL['o2o']) 
+        myGBL.update({'ConFileName': os.path.expanduser( '~' ) + '/MSS_ST_SDL.Config'}) 
+        #self.FWProjectFile.setText(myGBL['ConFileName'])
+        self.dlg.label_12.setText(myGBL['n2n'] + " and " + myGBL['o2o']) 
         m1m(self)
     
     def w1w(self):
@@ -477,7 +464,7 @@ class RubberSheetingEtc:
             myGBL.update({'o2o': "Serv"}) 
         elif self.dlg.v1v.isChecked() and self.dlg.u1u.isChecked():
             myGBL.update({'o2o': "Both"}) 
-        self.dlg.a41.setText(myGBL['n2n'] + " and " + myGBL['o2o']) 
+        self.dlg.label_12.setText(myGBL['n2n'] + " and " + myGBL['o2o']) 
         self.dlg.h1h.setText("Process the QGIS Selected Themes to " + myGBL['o2o'])
         self.dlg.e1e.setText("Delete the QGIS Selected Themes from " + myGBL['o2o'])
 
@@ -490,15 +477,17 @@ class RubberSheetingEtc:
         if self.first_start == True:
             self.first_start = False
 
-            with open("log.WhatIsGoingOn", 'w') as outSQL_file:
-                outSQL_file.write("Look here for a running report on what is happening inside this PlugIn\n")
-            outSQL_file.close
+            with open(os.path.expanduser( '~' ) + "/log.aaa", 'w') as logaaa_file:
+                logaaa_file.close
+            with open(os.path.expanduser( '~' ) + "/log2.aaa", 'w') as logaaa_file:
+                logaaa_file.close
 
-            myGBL.update({'ConFileName': os.path.expanduser( '~' ) + '/PGS_ST_Rbr.Config'}) 
+
+            myGBL.update({'ConFileName': os.path.expanduser( '~' ) + '/PGS_ST_SDL.Config'}) 
             self.dlg = RubberSheetingEtcDialog()
             self.dlg.g1g.clicked.connect(self.c1c)
             self.dlg.h1h.clicked.connect(self.b1b)
-            self.dlg.e1e.clicked.connect(self.a3a)
+            self.dlg.e1e.clicked.connect(self.select_btn_Drop_SelectedThemes)
             self.dlg.rb_PostGIS.clicked.connect(self.i1i)
             self.dlg.c2c.clicked.connect(self.j1j)
             self.dlg.o1o.clicked.connect(self.d1d)
@@ -506,11 +495,15 @@ class RubberSheetingEtc:
             self.dlg.u1u.clicked.connect(self.w1w)
             self.dlg.v1v.clicked.connect(self.w1w)
             self.dlg.d2d.clicked.connect(self.k1k)
+            
+            
+            
+
             self.dlg.rb_PostGIS.setChecked(True)
 
             myGBL.update({'n2n': "PGS"}) 
             myGBL.update({'o2o': "Both"}) 
-            self.dlg.a41.setText(myGBL['n2n'] + " and " + myGBL['o2o']) 
+            self.dlg.label_12.setText(myGBL['n2n'] + " and " + myGBL['o2o']) 
             self.dlg.h1h.setText("Process the QGIS Selected Themes to " + myGBL['o2o'])
             self.dlg.e1e.setText("Delete the QGIS Selected Themes from " + myGBL['o2o'])
 
@@ -576,10 +569,11 @@ def m1m(self):
 
                 x1x(self)
                 
+                #self.dlg.mQgsProjectionSelectionWidget_Table.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
                 if len(lines) > 6:
                     SRID_Table = lines[6].replace('\n','').split('=')[1]
                     self.dlg.mQgsProjectionSelectionWidget_Table.setCrs(QgsCoordinateReferenceSystem(SRID_Table))
-                    myGBL.update({'l3l': SRID_Table}) 
+                    myGBL.update({'tableSRID': SRID_Table}) 
 
                 if len(lines) > 7:
                     myGBL.update({'n2n': lines[7].replace('\n','').split('=')[1]}) 
@@ -652,7 +646,7 @@ def m1m(self):
                 if len(lines) > 21:
                     SRID_Local = lines[21].replace('\n','').split('=')[1]
                     self.dlg.mQgsProjectionSelectionWidget_LclXY.setCrs(QgsCoordinateReferenceSystem(SRID_Local))
-                    myGBL.update({'m3m': SRID_Local}) 
+                    myGBL.update({'LocalSRID': SRID_Local}) 
 
             QGeomTypes = [("Point", QgsWkbTypes.PointGeometry, QgsWkbTypes.Point),
                 ("LineString", QgsWkbTypes.LineGeometry, QgsWkbTypes.LineString),
@@ -687,7 +681,7 @@ def m1m(self):
                 ("None", QgsWkbTypes.NullGeometry, QgsWkbTypes.NoGeometry)]
             myGBL.update({'QGeomTypes': QGeomTypes}) 
 
-            self.dlg.a41.setText(myGBL['n2n'] + " and " + myGBL['o2o']) 
+            self.dlg.label_12.setText(myGBL['n2n'] + " and " + myGBL['o2o']) 
             self.dlg.h1h.setText("Process the QGIS Selected Themes to " + myGBL['o2o'])
             self.dlg.e1e.setText("Delete the QGIS Selected Themes from " + myGBL['o2o'])
 
@@ -743,20 +737,18 @@ def StripOGCFeatType(OGCFeature: str):
         OGCFeature = OGCFeature.replace("NONE", "")
     return OGCFeature.strip()
 
-def e3e(self, f3f: QgsVectorLayer, **myGBL):
-    whatIsGoingOn("Started Reading In STT_VectorVector which has " + str(f3f.featureCount()) + " features...")
-
-    g3g.clear()
-    fromCRS = f3f.sourceCrs()
+def readInSTT_VectorVector(self, myshiftVectVectLayer: QgsVectorLayer, **myGBL):
+    shiftVectVectList.clear()
+    fromCRS = myshiftVectVectLayer.sourceCrs()
     if "invalid" in str(fromCRS):
         QMessageBox.information(None,"localSRID error","CRS NOT set", QMessageBox.Ok, QMessageBox.Ok)
         return
-    destCRS = QgsCoordinateReferenceSystem(myGBL['l3l'])
+    destCRS = QgsCoordinateReferenceSystem(myGBL['tableSRID'])
     if "invalid" in str(destCRS):
-        QMessageBox.information(None,"l3l error","CRS NOT set", QMessageBox.Ok, QMessageBox.Ok)
+        QMessageBox.information(None,"tableSRID error","CRS NOT set", QMessageBox.Ok, QMessageBox.Ok)
         return
     ct = QgsCoordinateTransform(fromCRS, destCRS, QgsProject.instance())
-    for f in f3f.getFeatures():
+    for f in myshiftVectVectLayer.getFeatures():
         geom = f.geometry()
         geom.transform(ct)
         # LINESTRING(145.237020396534 -38.1078514961058,145.237020677997 -38.1078515860001)
@@ -764,46 +756,45 @@ def e3e(self, f3f: QgsVectorLayer, **myGBL):
         eastNum = float(newgeomStr.split(" ")[0]) + 1000000
         eastStr = str(eastNum) + "000000000000000000000000000"
         eastStr = eastStr[4:24]
-        g3g.append(eastStr + "|" + newgeomStr)
-    g3g.sort()
-    whatIsGoingOn("Finished Reading In STT_VectorVector")
-    return len(g3g)
+        shiftVectVectList.append(eastStr + "|" + newgeomStr)
+    shiftVectVectList.sort()
+    return len(shiftVectVectList)
 
 
-def c3c(x):
+def getshiftVectVectListIndex(x):
     eastNum = x + 1000000
     eastStr = str(eastNum) + "000000000000000000000000000"
     eastStr = eastStr[4:24]
     
     # Do a binary search to get to the start Longitude
     MinI = 1
-    MaxI = len(g3g)
+    MaxI = len(shiftVectVectList)
     if MaxI > 0:
         Found = 0
         while Found == 0:
             ThisI = int((MinI + MaxI) / 2)
-            if eastStr > g3g[ThisI]:
+            if eastStr > shiftVectVectList[ThisI]:
                 MinI = ThisI
-            elif eastStr < g3g[ThisI]:
+            elif eastStr < shiftVectVectList[ThisI]:
                 MaxI = ThisI
-            elif eastStr == g3g[ThisI]:
+            elif eastStr == shiftVectVectList[ThisI]:
                 Found = ThisI
             if MaxI - MinI <= 1:
                 Found = MinI
 
-        while g3g[Found - 1] > eastStr and Found > 1:
+        while shiftVectVectList[Found - 1] > eastStr and Found > 1:
                 Found = Found - 1
     return Found
 
-def k3k(x, y, center_x, center_y):
+def myBearingDeg(x, y, center_x, center_y):
     angle = math.degrees(math.atan2(y - center_y, x - center_x))
     #bearing1 = (angle + 360) % 360
     bearing2 = (90 - angle) % 360
     #print "gb: x=%2d y=%2d angle=%6.1f bearing1=%5.1f bearing2=%5.1f" % (x, y, angle, bearing1, bearing2)
     return bearing2
 
-def d3d(xyStrSSV: str):
-    myBear = k3k(float(xyStrSSV.split(" ")[0]), float(xyStrSSV.split(" ")[1]),float(myGBL['FromE']), float(myGBL['FromN']))
+def getSimilarityTransformXY(xyStrSSV: str):
+    myBear = myBearingDeg(float(xyStrSSV.split(" ")[0]), float(xyStrSSV.split(" ")[1]),float(myGBL['FromE']), float(myGBL['FromN']))
     p = [float(xyStrSSV.split(" ")[0]), float(xyStrSSV.split(" ")[1])]
     q = [float(myGBL['FromE']), float(myGBL['FromN'])]
     myDist = math.dist(p, q) *  float(myGBL['ScaleFactor'])
@@ -812,8 +803,8 @@ def d3d(xyStrSSV: str):
     y = float(myGBL['ToN']) + math.cos(myBearRad) * float(myDist)
     return str(x) + " " + str(y)
 
-def b3b(xyStrSSV: str):
-    myBear = k3k(float(xyStrSSV.split(" ")[0]), float(xyStrSSV.split(" ")[1]),float(myGBL['FromE_2']), float(myGBL['FromN_2']))
+def getSimilarityTransformLocalXY(xyStrSSV: str):
+    myBear = myBearingDeg(float(xyStrSSV.split(" ")[0]), float(xyStrSSV.split(" ")[1]),float(myGBL['FromE_2']), float(myGBL['FromN_2']))
     p = [float(xyStrSSV.split(" ")[0]), float(xyStrSSV.split(" ")[1])]
     q = [float(myGBL['FromE_2']), float(myGBL['FromN_2'])]
     myDist = math.dist(p, q) *  float(myGBL['ScaleFactor_2'])
@@ -822,35 +813,31 @@ def b3b(xyStrSSV: str):
     y = float(myGBL['ToN_2']) + math.cos(myBearRad) * float(myDist)
     return str(x) + " " + str(y)
 
-def h3h(xyStrSSV: str):
+def getRubberSheetedXY(xyStrSSV: str):
     xCrd = float(xyStrSSV.split(" ")[0])
     yCrd = float(xyStrSSV.split(" ")[1])
-
-    #with open(os.path.expanduser( '~' ) + "/log.h3h", 'w') as Rubber_file:
-        #Rubber_file.write("h3h: " + xyStrSSV + '\n')
-
+    
     # So at latitude φ an angle of θ radians describes an arc of length M = R θ cos(φ).
     EarthRadius = 6367467.5
     cos_y = math.cos(yCrd / 180 * math.pi)
     # θ = M / (R cos(φ))
-    q3q = 100 / (EarthRadius * cos_y) * 180 / math.pi
-    r3r = 100 / EarthRadius * 180 / math.pi
-    z3d = 0.01 / EarthRadius * 180 / math.pi
-    #Rubber_file.write("z3d: " + str(z3d) + '\n')
+    diffLat = 100 / (EarthRadius * cos_y) * 180 / math.pi
+    diffLng = 100 / EarthRadius * 180 / math.pi
+    oneCM = 0.01 / EarthRadius * 180 / math.pi
     lclSV = list()
     lclnum = 0
     loopnum = 0
     while lclnum < 10 and loopnum < 2:
         loopnum = loopnum + 1
-        s3s = xCrd - q3q * loopnum
-        t3t = s3s + q3q
-        u3u = c3c(s3s)
-        w3w = c3c(t3t)
-        svPntr = u3u - 1
-        #Rubber_file.write("(L) min/max: " + str(loopnum) + " " + str(s3s) + " " + str(t3t) + ", " + str(u3u) + " " + str(w3w) + '\n')
-        while svPntr < w3w:
+        leftmin = xCrd - diffLat * loopnum
+        leftmax = leftmin + diffLat
+        leftbeg = getshiftVectVectListIndex(leftmin)
+        leftend = getshiftVectVectListIndex(leftmax)
+        svPntr = leftbeg - 1
+
+        while svPntr < leftend:
             svPntr = svPntr + 1
-            SVect = g3g[svPntr]
+            SVect = shiftVectVectList[svPntr]
             #  145.237020396534-145.237020396534 -38.1078514961058,145.237020677997 -38.1078515860001)
             geomStr = SVect.split("|")[1]
             fromXY = geomStr.split(",")[0]
@@ -858,40 +845,46 @@ def h3h(xyStrSSV: str):
             diffX = fromY - yCrd
             if diffX < 0:
                 diffX = -diffX
-            if diffX < r3r:
+            if diffX < diffLng:
                 fromX = float(fromXY.split(" ")[0])
                 p = [fromX, fromY]
                 q = [xCrd, yCrd]
                 distXY = math.dist(p, q) + 1000000
-                x3x = str(distXY) + "000000000000000000000000000"
-                x3x = x3x[4:24]
-                lclSV.append(x3x + "|" + geomStr)            
-        t3t = xCrd + q3q * loopnum
-        s3s = t3t - q3q
-        u3u = c3c(s3s)
-        w3w = c3c(t3t)
-        #Rubber_file.write("(R) min/max: " + str(loopnum) + " " + str(s3s) + " " + str(t3t) + ", " + str(u3u) + " " + str(w3w) + '\n')
-        for x in range(u3u, w3w):
-            geomStr = g3g[x].split("|")[1]
+                distStr = str(distXY) + "000000000000000000000000000"
+                distStr = distStr[4:24]
+                lclSV.append(distStr + "|" + geomStr)            
+        leftmin = xCrd + diffLat * loopnum
+        leftmax = leftmin - diffLat
+        leftbeg = getshiftVectVectListIndex(leftmin)
+        leftend = getshiftVectVectListIndex(leftmax)
+        for x in range(leftbeg, leftend):
+            geomStr = shiftVectVectList[x].split("|")[1]
             fromXY = geomStr.split(",")[0]
             fromY = float(fromXY.split(" ")[1])
             diffX = fromY - yCrd
             if diffX < 0:
                 diffX = -diffX
-            if diffX < r3r:
+            if diffX < diffLng:
                 fromX = float(fromXY.split(" ")[0])
                 p = [fromX, fromY]
                 q = [xCrd, yCrd]
                 distXY = math.dist(p, q) + 1000000
-                x3x = str(distXY) + "000000000000000000000000000"
-                x3x = x3x[4:24]
-                lclSV.append(x3x + "|" + geomStr)            
+                distStr = str(distXY) + "000000000000000000000000000"
+                distStr = distStr[4:24]
+                lclSV.append(distStr + "|" + geomStr)            
     lclSV.sort()
 
-    y3y = 0
-    z3z = 0
-    TotalW = 0
-    z3b = 0
+    #with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
+    #    outPGS_file.write("lsv list" + '\n')
+    #    for sv in lclSV:
+    #        outPGS_file.write("lsv" + sv + '\n')
+    #    outPGS_file.close()
+
+
+    TotalE = 0
+    TotalN = 0
+    TotalD = 0
+    NumFnd = 0
     for x in range(len(lclSV)):
         if x < 10:
             geomStr = lclSV[x].split("|")[1]
@@ -903,47 +896,48 @@ def h3h(xyStrSSV: str):
             endY = float(endXY.split(" ")[1])
             p = [begX, begY]
             q = [xCrd, yCrd]
-            p3p = math.dist(p, q)
-            if p3p < z3d / 10:
-                #Rubber_file.write("exact: " + str(x) + " " + str(begX) + " " + str(begY) + ", " + str(endX) + " " + str(endY) + " " + str(p3p) + '\n')
-                #Rubber_file.close()
+            ThisDist = math.dist(p, q)
+            if ThisDist < oneCM / 10:
                 return endXY
-            #Rubber_file.write("nearby: " + str(x) + " " + str(begX) + " " + str(begY) + ", " + str(endX) + " " + str(endY) + " " + str(p3p) + '\n')
-            p3p = p3p + z3d
-            z3c = 1 / (p3p * p3p)
-            z3c = z3c * z3c
-            y3y = y3y + ((endX - begX) * z3c)
-            z3z = z3z + ((endY - begY) * z3c)
-            TotalW = TotalW + z3c
-            z3b = z3b + 1
-            #Rubber_file.write("nearby: " + str(z3b) + " " + str((z3c)) + " " + str(y3y) + ", " + str(z3z) + '\n')
-    if z3b == 0:
-        #Rubber_file.write("z3b == 0: " + xyStrSSV + '\n')
-        #Rubber_file.close()
-        return xyStrSSV
-    aLng = xCrd + y3y / TotalW
-    aLat = yCrd + z3z / TotalW
-    #Rubber_file.write("done: " + str(aLng) + " " + str(aLat) + '\n')
-    #Rubber_file.close()
+            ThisDist = ThisDist + oneCM
+            Variance = 1 / (ThisDist * ThisDist)
+            TotalE = TotalE + ((endX - begX) / Variance)
+            TotalN = TotalN + ((endY - begY) / Variance)
+            TotalD = TotalD + (1 / Variance)
+            NumFnd = NumFnd + 1
+    if NumFnd == 0:
+      return xyStrSSV
+    aLng = xCrd + TotalE / TotalD
+    aLat = yCrd + TotalN / TotalD
+    with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
+        outPGS_file.write("Out getRubberSheetedXY: " + xyStrSSV + " -> " + str(aLng) + " " + str(aLat) + '\n')
+        outPGS_file.close()
     return str(aLng) + " " + str(aLat)
 
-def j3j(wktStr: str, routine2Call: int, LclFileName: str):
+def rubbersheetWKT(wktStr: str, routine2Call: int, LclFileName: str):
     try:
+        with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
+            outPGS_file.write("In rubbersheetWKT!: " + str(routine2Call) + '\n')
+            outPGS_file.close()
         # LINESTRING(145.237020396534 -38.1078514961058, 145.237020677997 -38.1078515860001)
         wktStr = wktStr.replace(", ",",")
         wktUpg = wktStr
         wktStr = StripOGCFeatType(wktStr)
         wktStr = wktStr.replace("),(", " ").replace("(", "").replace(")", "")
         wktStr = wktStr.replace("(", "").replace(")", "").replace(", ", ",")
+        #with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
+        #    outPGS_file.write(wktUpg + '\n')
+        #    outPGS_file.write(wktStr + '\n')
+        #    outPGS_file.close()
         wktArr = wktStr.split(",")
         for x in range(len(wktArr)):
             curStr = wktArr[x]
             if routine2Call == 0:
-                adjStr = h3h(curStr)
+                adjStr = getRubberSheetedXY(curStr)
             elif routine2Call == 1:
-                adjStr = d3d(curStr)
+                adjStr = getSimilarityTransformXY(curStr)
             elif routine2Call == 2:
-                adjStr = b3b(curStr)
+                adjStr = getSimilarityTransformLocalXY(curStr)
 
             wktUpg = wktUpg.replace("(" + curStr + ")", "(" + adjStr + ")")
             wktUpg = wktUpg.replace("(" + curStr + ",", "(" + adjStr + ",")
@@ -951,11 +945,27 @@ def j3j(wktStr: str, routine2Call: int, LclFileName: str):
             wktUpg = wktUpg.replace("," + curStr + ",", "," + adjStr + ",")
             wktUpg = wktUpg.replace("(" + curStr + " ", "(" + adjStr + " ") # 3D and M
             wktUpg = wktUpg.replace("," + curStr + " ", "," + adjStr + " ")
+        #    if x <= 10:
+        #        with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
+        #            outPGS_file.write("In rubbersheetWKT! wktStr: " + wktStr + '\n')
+        #            outPGS_file.write("In rubbersheetWKT! wktUpg: " + wktUpg + '\n')
+        #            outPGS_file.close()
         return wktUpg
     except Exception as error:
-        whatIsGoingOn("Oops! An exception has occured: " + str(error) + ", Exception TYPE: " + str(type(error)))
-        whatIsGoingOn(str(error.args))
-        whatIsGoingOn(wktUpg )
+        with open(LclFileName, 'a') as log_file:
+            log_file.write(wktUpg + '\n')
+            log_file.write("Exception TYPE: " + str(type(error)) + '\n')
+            error_obj = error.args
+            log_file.write(str(error_obj) + '\n')
+            log_file.close
+    
+        with open(os.path.expanduser( '~' ) + "/log.aaa", 'a') as outPGS_file:
+            outPGS_file.write("Oops! An exception has occured: " + str(error) + '\n')
+            outPGS_file.write("Exception TYPE: " + str(type(error)) + '\n')
+            error_obj = error.args
+            outPGS_file.write(str(error_obj) + '\n')
+            outPGS_file.write(wktUpg + '\n')
+            outPGS_file.close()
         return False
 
 def l1l(self, aLayer: QgsVectorLayer, **myGBL):
@@ -964,34 +974,30 @@ def l1l(self, aLayer: QgsVectorLayer, **myGBL):
 
     vl:QgsVectorLayer
     vl = aLayer
-    n3n = vl.name().lower().replace(".","_")
-    a = "l"
-
-    whatIsGoingOn("Started on Vector Theme: " + n3n + " with " + str(vl.featureCount()) + " features...")
+    layername = vl.name().lower().replace(".","_")
     if self.dlg.toolBox_Choice.currentIndex() == 0 and self.dlg.CB_DoRubberSheeting.isChecked:
-        n3n = n3n + "_rs"
+        layername = layername + "_rs"
     elif self.dlg.toolBox_Choice.currentIndex() == 1:
-        n3n = n3n + "_tp"
+        layername = layername + "_tp"
     elif self.dlg.toolBox_Choice.currentIndex() == 2:
-        n3n = n3n + "_ltp"
-
+        layername = layername + "_ltp"
     themeSRID = str(vl.sourceCrs())
     themeSRID = themeSRID.replace("<QgsCoordinateReferenceSystem: ","").replace(">","").replace("EPSG:","")
     if "invalid" in themeSRID:
         QMessageBox.information(None,"themeSRID error","CRS NOT set", QMessageBox.Ok, QMessageBox.Ok)
         return
 
-    l3l = myGBL['l3l'].replace("EPSG:","")
+    tableSRID = myGBL['tableSRID'].replace("EPSG:","")
     n2n = myGBL['n2n']
     o2o = myGBL['o2o']
-
-    SQLFileName = os.path.expanduser( '~' ) + "/" +  n2n + "_" + n3n + ".sql"
-    myGBL.update({'LogFileName': os.path.expanduser( '~' ) + "/" +  n2n + "_" + n3n + ".txt"}) 
+    SQLFileName = os.path.expanduser( '~' ) + "/" +  n2n + "_" + layername + ".sql"
+    myGBL.update({'LogFileName': os.path.expanduser( '~' ) + "/" +  n2n + "_" + layername + ".txt"}) 
 
     with open(myGBL['LogFileName'], 'w') as log_file:
-        log_file.write("All errors for: " + n2n + "_" + n3n)
+        log_file.write("All errors for: " + n2n + "_" + layername)
         log_file.close
 
+    #if o2o == "Serv" or o2o == "Both":
     if myGBL['n2n'] == "PGS":
         connPGS = i2i(**myGBL)
 
@@ -1008,25 +1014,21 @@ def l1l(self, aLayer: QgsVectorLayer, **myGBL):
         #connDEV.autocommit = True
 
     with open(SQLFileName, 'w') as outSQL_file:
-        b = "i"
-        dateBeg = datetime.datetime.now()
-        newTblName = n3n
-        a = b + a + a + b
-        if n2n == "PGS":
-            newTblName = myGBL['PG_Schema'] + "." + n3n
-        if n2n == "MSS" and myGBL['PG_Schema'] != "":
-            newTblName = myGBL['PG_Schema'] + "." + n3n
-
-        line = "-- " + n3n + " has " + str(vl.featureCount()) + " features..."
-        outSQL_file.write(line + '\n')
         
+        dateBeg = datetime.datetime.now()
+        newTblName = layername
+        if n2n == "PGS":
+            newTblName = myGBL['PG_Schema'] + "." + layername
+        if n2n == "MSS" and myGBL['PG_Schema'] != "":
+            newTblName = myGBL['PG_Schema'] + "." + layername
+
+        line = "-- " + layername + " has " + str(vl.featureCount()) + " features..." + '\n'
+        outSQL_file.write(line)
         ncount = 0
-        nullcount = 0
         ora2Long = 0
         sqlStr = ""
         insStr = ""
- 
-        whatIsGoingOn("Creating Table Defn: " + newTblName)
+#create schema test123 AUTHORIZATION rogermsu;
 
         if n2n == "PGS":
             sqlStr = "create schema if not exists " + myGBL['PG_Schema'] + " AUTHORIZATION " + myGBL['PG_Username'] + ";" + '\n'
@@ -1046,7 +1048,6 @@ def l1l(self, aLayer: QgsVectorLayer, **myGBL):
 
         fieldnames = [field.name() for field in vl.fields()]
         line = ','.join(name for name in fieldnames) + '\n'
-        a = "m" + a + "o"
 
         QGeomTypes = myGBL['QGeomTypes']
         gType = "Not Found"
@@ -1056,7 +1057,7 @@ def l1l(self, aLayer: QgsVectorLayer, **myGBL):
 
         if gType != "Not Found":
             if n2n == "PGS":
-                sqlStr = sqlStr + "geom geometry(" + gType + "," + l3l + ")," + '\n'
+                sqlStr = sqlStr + "geom geometry(" + gType + "," + tableSRID + ")," + '\n'
                 insStr = insStr + "geom,"
             elif n2n == "ORA" or n2n == "ORD":
                 sqlStr = sqlStr + "geom MDSYS.SDO_GEOMETRY," + chr(141)
@@ -1159,8 +1160,6 @@ def l1l(self, aLayer: QgsVectorLayer, **myGBL):
             outSQL_file.write(sqlStr.replace(chr(140),";").replace(chr(141),'\n') + '\n')
         insStr = insStr + ") values "
         insStr = insStr.replace(",)", ")")
-        a = " " + a + "n"
-
         if o2o == "Serv" or o2o == "Both":
             if n2n == "PGS":
                 e2e(sqlStr, connPGS, myGBL['LogFileName'])
@@ -1177,55 +1176,63 @@ def l1l(self, aLayer: QgsVectorLayer, **myGBL):
                 # h2h("create schema " + myGBL['PG_Schema'] + " AUTHORIZATION " + myGBL['PG_Username'] + ";", connDEV, myGBL['LogFileName'])
                 h2h(sqlStr, connDEV, myGBL['LogFileName'])
 
-
         t2t = ""
         fromCRS = vl.sourceCrs()
         if self.dlg.toolBox_Choice.currentIndex() == 2:
-            fromCRS = QgsCoordinateReferenceSystem(myGBL['m3m'])
+            fromCRS = QgsCoordinateReferenceSystem(myGBL['LocalSRID'])
         if "invalid" in str(fromCRS):
-            QMessageBox.information(None,"m3m error","CRS NOT set", QMessageBox.Ok, QMessageBox.Ok)
+            QMessageBox.information(None,"LocalSRID error","CRS NOT set", QMessageBox.Ok, QMessageBox.Ok)
             return
-        destCRS = QgsCoordinateReferenceSystem(myGBL['l3l'])
-        if "invalid" in myGBL['l3l']:
-            QMessageBox.information(None,"l3l error","CRS NOT set", QMessageBox.Ok, QMessageBox.Ok)
+        destCRS = QgsCoordinateReferenceSystem(myGBL['tableSRID'])
+        if "invalid" in myGBL['tableSRID']:
+            QMessageBox.information(None,"tableSRID error","CRS NOT set", QMessageBox.Ok, QMessageBox.Ok)
             return
         ct = QgsCoordinateTransform(fromCRS, destCRS, QgsProject.instance())
-        whatIsGoingOn("QgsCoordinateTransform: From " + str(fromCRS).replace("<QgsCoordinateReferenceSystem: ","").replace(">","") + " To " + str(destCRS).replace("<QgsCoordinateReferenceSystem: ","").replace(">",""))
         
-        abc = self.dlg.a44.text().replace("("," ").replace(")"," ").replace(a, z3 + z3).split(" ")
-        efg = float(abc[3])
         for f in vl.getFeatures():
             ncount = ncount + 1
-            if ncount == 1 or ncount == 10 or ncount == 100 or ncount == 500 or str(ncount).endswith("000"):
-                whatIsGoingOn(newTblName + ": " +str(ncount) + "/" + str(vl.featureCount()))
-
-            if ncount <= efg:
+            if ncount <= 2000:
                 geom = f.geometry()
                 if self.dlg.toolBox_Choice.currentIndex() != 2:
                     geom.transform(ct)
                 geom_asWkt = geom.asWkt()
 
-                if geom_asWkt == "":
-                    geom_asWkt = "NULL"
-                    nullcount = nullcount + 1
-                elif self.dlg.toolBox_Choice.currentIndex() == 0 and self.dlg.CB_DoRubberSheeting.isChecked:
-                    geom_asWkt = j3j(geom_asWkt, 0, myGBL['LogFileName'])
-                    if geom_asWkt == False:
-                        geom_asWkt = "NULL"
+                if self.dlg.toolBox_Choice.currentIndex() == 0 and self.dlg.CB_DoRubberSheeting.isChecked:
+                    with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
+                        outPGS_file.write("was geom_asWkt! (Rub): " + '\n')
+                        outPGS_file.write(geom_asWkt + '\n')
+                        outPGS_file.close()
+                    geom_asWkt = rubbersheetWKT(geom_asWkt, 0, myGBL['LogFileName'])
                 elif self.dlg.toolBox_Choice.currentIndex() == 1:
-                    geom_asWkt = j3j(geom_asWkt, 1, myGBL['LogFileName'])
-                    if geom_asWkt == False:
-                        geom_asWkt = "NULL"
+                    with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
+                        outPGS_file.write("was geom_asWkt! (TP): " + '\n')
+                        outPGS_file.write(geom_asWkt + '\n')
+                        outPGS_file.close()
+                    geom_asWkt = rubbersheetWKT(geom_asWkt, 1, myGBL['LogFileName'])
                 elif self.dlg.toolBox_Choice.currentIndex() == 2:
-                    geom_asWkt = j3j(geom_asWkt, 2, myGBL['LogFileName'])
-                    if geom_asWkt == False:
-                        geom_asWkt = "NULL"
-                    else:
-                        featT = QgsFeature()
-                        featT.setGeometry( QgsGeometry.fromWkt(geom_asWkt))
-                        geomT = featT.geometry()
-                        geomT.transform(ct)
-                        geom_asWkt = geomT.asWkt()
+                    with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
+                        outPGS_file.write("was geom_asWkt! (LTP): " + '\n')
+                        outPGS_file.write(geom_asWkt + '\n')
+                        outPGS_file.close()
+                    geom_asWkt = rubbersheetWKT(geom_asWkt, 2, myGBL['LogFileName'])
+                    with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
+                        outPGS_file.write("cccc rubbersheetWKT geom_asWkt! (LTP): " + '\n')
+                        outPGS_file.write(geom_asWkt + '\n')
+                        outPGS_file.close()
+                    featT = QgsFeature()
+                    featT.setGeometry( QgsGeometry.fromWkt(geom_asWkt))
+                    geomT = featT.geometry()
+                    geomT.transform(ct)
+                    geom_asWkt = geomT.asWkt()
+                    with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
+                        outPGS_file.write("yyyy geomT.transform(ct) geomT.asWkt()! (LTP): " + '\n')
+                        outPGS_file.write(geom_asWkt  + '\n')
+                        outPGS_file.close()
+                    
+                with open(os.path.expanduser( '~' ) + "/log2.aaa", 'a') as outPGS_file:
+                    outPGS_file.write("now geom_asWkt!: " + '\n')
+                    outPGS_file.write(geom_asWkt + '\n')
+                    outPGS_file.close()
 
                 geoStr = "NULL"
                 if n2n == "ORA" or n2n == "ORD":
@@ -1332,13 +1339,13 @@ def l1l(self, aLayer: QgsVectorLayer, **myGBL):
                             g2g(s2s, connOrD, myGBL['LogFileName'])
                             g2g("commit", connOrD, myGBL['LogFileName'])
 
-                elif geom_asWkt != "" and geom_asWkt != "NULL":
+                elif geom_asWkt != "":
                     if n2n == "PGS":
-                        geoStr = "st_setSRID(ST_GeomFromText('" + geom_asWkt + "')," + l3l + ")"
+                        geoStr = "st_setSRID(ST_GeomFromText('" + geom_asWkt + "')," + tableSRID + ")"
                     elif n2n == "ORA" or n2n == "ORD":
                         geoStr = "SDO_UTIL.FROM_WKTGEOMETRY('" + geom_asWkt + "')," + str(ncount)
                     elif n2n == "MSS":
-                        geoStr = "geography::STGeomFromText('" + geom_asWkt + "'," + l3l + ")"
+                        geoStr = "geography::STGeomFromText('" + geom_asWkt + "'," + tableSRID + ")"
     
                 if didBind == False:
                     t2t = t2t + "(" + geoStr + ","
@@ -1483,14 +1490,13 @@ def l1l(self, aLayer: QgsVectorLayer, **myGBL):
 
         # last group of records
         if n2n == "PGS":
-            if len(t2t) > 0:
-                t2t = t2t.replace(",)", ")").replace("'NULL'", "NULL").replace(")(st_setSRID", ")," + '\n' + "(st_setSRID")
-                t2t = t2t.replace(")(st_transform", ")," + '\n' + "(st_transform")
-                t2t = t2t.replace(")(NULL", ")," + '\n' + "(NULL")
-                if o2o == "File" or o2o == "Both":
-                    outSQL_file.write(insStr + '\n' + t2t + '\n')
-                if o2o == "Serv" or o2o == "Both":
-                    e2e(insStr + t2t, connPGS, myGBL['LogFileName'])
+            t2t = t2t.replace(",)", ")").replace("'NULL'", "NULL").replace(")(st_setSRID", ")," + '\n' + "(st_setSRID")
+            t2t = t2t.replace(")(st_transform", ")," + '\n' + "(st_transform")
+            t2t = t2t.replace(")(NULL", ")," + '\n' + "(NULL")
+            if o2o == "File" or o2o == "Both":
+                outSQL_file.write(insStr + '\n' + t2t + '\n')
+            if o2o == "Serv" or o2o == "Both":
+                e2e(insStr + t2t, connPGS, myGBL['LogFileName'])
             t2t = ""
         elif n2n == "ORA" or n2n == "ORD":
             if len(t2t) > 0:
@@ -1603,16 +1609,9 @@ def l1l(self, aLayer: QgsVectorLayer, **myGBL):
                 outSQL_file.close
                 os.remove(SQLFileName)
 
-        newText = n3n + ": " + str(nullcount) + "\n"
-        oldText = self.dlg.textEdit.toPlainText()
-        if nullcount > 0:
-            #QMessageBox.information(None,"Warning, NULL Geometries Found!", newText, QMessageBox.Ok, QMessageBox.Ok)
-            whatIsGoingOn(newText)
-            self.dlg.textEdit.setPlainText(newText + oldText)
-        else:
-            self.dlg.textEdit.setPlainText(oldText + newText)
-        whatIsGoingOn("Output file written at " + SQLFileName)
         self.iface.messageBar().pushMessage("Success", "Output file written at " + SQLFileName, level=Qgis.Success, duration=5)
+
+    print ("done")
     return None
 
 
@@ -1623,9 +1622,21 @@ def e2e(sql2Run: str, connPGS: psycopg2, LclFileName: str):
         connPGS.commit() 
         return True
     except Exception as error:
-        whatIsGoingOn("Oops! An exception has occured: " + str(error) + ", Exception TYPE: " + str(type(error)))
-        whatIsGoingOn(str(error.args))
-        whatIsGoingOn(sql2Run)
+        QMessageBox.information(None, LclFileName, "e2e", QMessageBox.Ok, QMessageBox.Ok)
+        with open(LclFileName, 'a') as log_file:
+            log_file.write(sql2Run + '\n')
+            log_file.write("Exception TYPE: " + str(type(error)) + '\n')
+            error_obj = error.args
+            log_file.write(str(error_obj) + '\n')
+            log_file.close
+    
+        with open(os.path.expanduser( '~' ) + "/log.aaa", 'a') as outPGS_file:
+            outPGS_file.write("Oops! An exception has occured: " + str(error) + '\n')
+            outPGS_file.write("Exception TYPE: " + str(type(error)) + '\n')
+            error_obj = error.args
+            outPGS_file.write(str(error_obj) + '\n')
+            outPGS_file.write(sql2Run + '\n')
+            outPGS_file.close()
         return False
 
 def p1p(sql2Run: str, connPGS: psycopg2, LclFileName: str):
@@ -1677,9 +1688,19 @@ def f2f(sql2Run: str, connORA: oracledb, LclFileName: str):
             cursor.execute(sql2Run)
         return True
     except Exception as error:
-        whatIsGoingOn("Oops! An exception has occured: " + str(error) + ", Exception TYPE: " + str(type(error)))
-        whatIsGoingOn(str(error.args))
-        whatIsGoingOn(sql2Run)
+        with open(LclFileName, 'a') as log_file:
+            log_file.write(sql2Run + '\n')
+            log_file.write("Exception TYPE: " + str(type(error)) + '\n')
+            error_obj = error.args
+            log_file.write(str(error_obj) + '\n')
+            log_file.close
+        with open(os.path.expanduser( '~' ) + "/log.aaa", 'a') as outORA_file:
+            outORA_file.write("Oops! An exception has occured: " + str(error) + '\n')
+            outORA_file.write("Exception TYPE: " + str(type(error)) + '\n')
+            error_obj = error.args
+            outORA_file.write(str(error_obj) + '\n')
+            outORA_file.write(sql2Run + '\n')
+            outORA_file.close()
         return False
 
 def q1q(sql2Run: str, connORA: oracledb, LclFileName: str):
@@ -1716,24 +1737,37 @@ def z1z(sql2Run: str, connORA: oracledb, LclFileName: str):
 
 def g2g(sql2Run: str, connORD: pyodbc, LclFileName: str):
     try:
-        cursor = connORD.cursor()
-        if "drop table" in sql2Run.lower():
-            with cursor.suppress(Exception):
-                cursor.execute(sql2Run)
-            return True
+        with open(os.path.expanduser( '~' ) + "/log.aaa", 'a') as logaaa_file:
+            cursor = connORD.cursor()
+            if "drop table" in sql2Run.lower():
+                with cursor.suppress(Exception):
+                    cursor.execute(sql2Run)
+                return True
 
-        if chr(140) in sql2Run:
-            sqlArr = sql2Run.replace(chr(140),"").split('\n')
-            for aSQL in sqlArr:
-                if len(aSQL) > 5:
-                    cursor.execute(aSQL)
-        else:
-            cursor.execute(sql2Run)
+            if chr(140) in sql2Run:
+                sqlArr = sql2Run.replace(chr(140),"").split('\n')
+                for aSQL in sqlArr:
+                    logaaa_file.write(aSQL + '\n')
+                    if len(aSQL) > 5:
+                        cursor.execute(aSQL)
+            else:
+                logaaa_file.write(sql2Run + '\n')
+                cursor.execute(sql2Run)
         return True
     except Exception as error:
-        whatIsGoingOn("Oops! An exception has occured: " + str(error) + ", Exception TYPE: " + str(type(error)))
-        whatIsGoingOn(str(error.args))
-        whatIsGoingOn(sql2Run)
+        with open(LclFileName, 'a') as log_fileORD:
+            log_fileORD.write(sql2Run + '\n')
+            log_fileORD.write("Exception TYPE: " + str(type(error)) + '\n')
+            error_obj = error.args
+            log_fileORD.write(str(error_obj) + '\n')
+            log_fileORD.close
+        with open(os.path.expanduser( '~' ) + "/log.aaa", 'a') as outORD_file:
+            outORD_file.write("Oops! An exception has occured: " + str(error) + '\n')
+            outORD_file.write("Exception TYPE: " + str(type(error)) + '\n')
+            outORD_file.write(sql2Run + '\n')
+            error_obj = error.args
+            outORD_file.write(str(error_obj) + '\n')
+            outORD_file.close()
         return False
 
 def r1r(sql2Run: str, connORD: pyodbc, LclFileName: str):
@@ -1775,9 +1809,19 @@ def h2h(sql2Run: str, MSSconn: pyodbc, LclFileName: str):
         MSSconn.commit() 
         return True
     except Exception as error:
-        whatIsGoingOn("Oops! An exception has occured: " + str(error) + ", Exception TYPE: " + str(type(error)))
-        whatIsGoingOn(str(error.args))
-        whatIsGoingOn(sql2Run)
+        with open(LclFileName, 'a') as log_file:
+            log_file.write(sql2Run + '\n')
+            log_file.write("Exception TYPE: " + str(type(error)) + '\n')
+            error_obj = error.args
+            log_file.write(str(error_obj) + '\n')
+            log_file.close
+        with open(os.path.expanduser( '~' ) + "/log.aaa", 'a') as outDEV_file:
+            outDEV_file.write("Oops! An exception has occured: " + str(error) + '\n')
+            outDEV_file.write("Exception TYPE: " + str(type(error)) + '\n')
+            outDEV_file.write(sql2Run + '\n')
+            error_obj = error.args
+            outDEV_file.write(str(error_obj) + '\n')
+            outDEV_file.close()
         return False
 
 def s1s(sql2Run: str, connDEV: pyodbc, LclFileName: str):
@@ -1855,9 +1899,9 @@ def f1f(self):
             line = line + 'password=' + self.dlg.PG_Password.text() + '\n'
             line = line + 'port=' + self.dlg.PG_Port.text() + '\n'
             line = line + 'schemaname=' + self.dlg.PG_SchemaName.text() + '\n'
-            l3l = str(self.dlg.mQgsProjectionSelectionWidget_Table.crs())
-            l3l = l3l.replace("<QgsCoordinateReferenceSystem: ","").replace(">","")
-            line = line + 'l3l=' + l3l + '\n'
+            tableSRID = str(self.dlg.mQgsProjectionSelectionWidget_Table.crs())
+            tableSRID = tableSRID.replace("<QgsCoordinateReferenceSystem: ","").replace(">","")
+            line = line + 'tableSRID=' + tableSRID + '\n'
             line = line + 'n2n=' + myGBL['n2n'] + '\n'
             line = line + 'o2o=' + myGBL['o2o'] + '\n'
             line = line + 'FromE=' + self.dlg.tb_FromE.text() + '\n'
@@ -1875,6 +1919,18 @@ def f1f(self):
             localSRID = str(self.dlg.mQgsProjectionSelectionWidget_LclXY.crs())
             localSRID = localSRID.replace("<QgsCoordinateReferenceSystem: ","").replace(">","")
             line = line + 'localSRID=' + localSRID + '\n'
+            line = line + 'LxmlFile=' + self.dlg.uXmlFile.text() + '\n'
+            if self.dlg.listWidget.currentRow() >= 0:
+                line = line + 'LxmlMonu=' + self.dlg.listWidget.currentItem().text() + '\n'
+            else:
+                line = line + 'LxmlMonu=\n'
+            line = line + 'ToE_3=' + self.dlg.tb_ToE_3.text() + '\n'
+            line = line + 'ToN_3=' + self.dlg.tb_ToN_3.text() + '\n'
+            line = line + 'RotnDecDeg_3=' + self.dlg.tb_RotnDecDeg_3.text() + '\n'
+            line = line + 'ScaleFactor_3=' + self.dlg.tb_ScaleFactor_3.text() + '\n'
+            lxmlSRID = str(self.dlg.mQgsProjectionSelectionWidget_LXMLXY.crs())
+            lxmlSRID = lxmlSRID.replace("<QgsCoordinateReferenceSystem: ","").replace(">","")
+            line = line + 'lxmlSRID=' + lxmlSRID + '\n'
 
             conf_file.write(line)
             conf_file.close()
@@ -1885,7 +1941,7 @@ def f1f(self):
         QMessageBox.information(None, "Failure", err, QMessageBox.Ok, QMessageBox.Ok)
 
 
-def i3i(self, sqlList, outSQL_file, errFileName, **myGBL):
+def processSQLList_PGS(self, sqlList, outSQL_file, errFileName, **myGBL):
     o2o = myGBL['o2o']
     if o2o == "Serv" or o2o == "Both":
         connPGS = i2i(**myGBL)
@@ -1896,10 +1952,4 @@ def i3i(self, sqlList, outSQL_file, errFileName, **myGBL):
         for sqlStr in sqlList:
             outSQL_file.write(sqlStr.replace(chr(140),";").replace(chr(141),'\n') + '\n')
 
-def whatIsGoingOn(aStr):
-    with open("log.WhatIsGoingOn", 'a') as outSQL_file:
-        aDate = datetime.datetime.now().strftime(" %Y %B %d, %I:%M%p ")
-        #'10:36AM on July 23, 2010'
-        outSQL_file.write(aDate + ": " + aStr + "\n")
-    outSQL_file.close
 

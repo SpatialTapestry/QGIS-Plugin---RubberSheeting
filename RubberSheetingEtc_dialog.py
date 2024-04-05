@@ -9,7 +9,7 @@
         begin                : 2023-12-27
         git sha              : $Format:%H$
         copyright            : (C) 2023 by Roger Merritt / Spatial Tapestry
-        email                : roger@SpatialTapesry.com.au
+        email                : roger@SpatialTapestry.com.au
  ***************************************************************************/
 
 /***************************************************************************

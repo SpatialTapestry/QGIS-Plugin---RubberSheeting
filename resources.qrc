@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/plugins/RubberSheetingEtc" >
+    <qresource prefix="/plugins/my_rubbersheeting_Dev/resources/" >
         <file>icon.png</file>
     </qresource>
 </RCC>

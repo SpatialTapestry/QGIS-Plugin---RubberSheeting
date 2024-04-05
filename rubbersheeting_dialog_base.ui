@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>RubberSheeting_Free</string>
+   <string>RubberSheetingEtc_DEV</string>
   </property>
   <widget class="QDialogButtonBox" name="button_box">
    <property name="geometry">
@@ -29,7 +29,7 @@
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QLabel" name="a47">
+  <widget class="QLabel" name="label_6">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -50,7 +50,7 @@
     <string>Manage Database, User and Schema Details:</string>
    </property>
   </widget>
-  <widget class="QLabel" name="a42">
+  <widget class="QLabel" name="label_11">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -86,7 +86,7 @@
     <string>IP Address:</string>
    </property>
   </widget>
-  <widget class="QLabel" name="a46">
+  <widget class="QLabel" name="label_7">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -99,7 +99,7 @@
     <string>Schema Name:</string>
    </property>
   </widget>
-  <widget class="QLabel" name="a40">
+  <widget class="QLabel" name="label_3">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -132,7 +132,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QLabel" name="a49">
+  <widget class="QLabel" name="label_4">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -171,7 +171,7 @@
     <string/>
    </property>
   </widget>
-  <widget class="QLabel" name="a4a">
+  <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -254,36 +254,30 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="a44">
+   <widget class="QLabel" name="label_9">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>90</y>
-      <width>391</width>
-      <height>20</height>
+      <x>40</x>
+      <y>100</y>
+      <width>321</width>
+      <height>17</height>
      </rect>
     </property>
     <property name="text">
-     <string>Note: Limited (2000) Features per Theme!</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <string>Note: Maximum of 2000 Features per Theme!</string>
     </property>
    </widget>
-   <widget class="QLabel" name="a43">
+   <widget class="QLabel" name="label_10">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>110</y>
-      <width>391</width>
+      <x>40</x>
+      <y>120</y>
+      <width>321</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
      <string>See RubberSheetingEtc.html for full support.</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>
@@ -328,7 +322,7 @@ Connection,
     </rect>
    </property>
   </widget>
-  <widget class="QLabel" name="a45">
+  <widget class="QLabel" name="label_8">
    <property name="geometry">
     <rect>
      <x>280</x>
@@ -342,7 +336,7 @@ Connection,
  the 'geom' field:</string>
    </property>
   </widget>
-  <widget class="QLabel" name="a48">
+  <widget class="QLabel" name="label_5">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -355,7 +349,7 @@ Connection,
     <string>Port:</string>
    </property>
   </widget>
-  <widget class="QLabel" name="a41">
+  <widget class="QLabel" name="label_12">
    <property name="geometry">
     <rect>
      <x>30</x>
@@ -492,7 +486,7 @@ Connection,
       <rect>
        <x>10</x>
        <y>10</y>
-       <width>371</width>
+       <width>231</width>
        <height>31</height>
       </rect>
      </property>
@@ -504,21 +498,8 @@ Connection,
       </font>
      </property>
      <property name="text">
-      <string>Write out Rubber Sheeted X,Y                 *** See log.WhatIsGoingOn ***
-(STT_VectorVector found in Legend)    ***  to monitor processing   ***</string>
-     </property>
-    </widget>
-    <widget class="QTextEdit" name="textEdit">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>50</y>
-       <width>391</width>
-       <height>381</height>
-      </rect>
-     </property>
-     <property name="documentTitle">
-      <string/>
+      <string>Write out Rubber Sheeted X,Y 
+(STT_VectorVector found in Legend)</string>
      </property>
     </widget>
    </widget>
@@ -527,14 +508,14 @@ Connection,
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>391</width>
-      <height>438</height>
+      <width>96</width>
+      <height>26</height>
      </rect>
     </property>
     <attribute name="label">
      <string>Two Point Transformation - known CRS/SRID</string>
     </attribute>
-    <widget class="QLabel" name="a4b3">
+    <widget class="QLabel" name="label_13">
      <property name="geometry">
       <rect>
        <x>20</x>
@@ -547,7 +528,7 @@ Connection,
       <string>From Easting/Longitude:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="a4b4">
+    <widget class="QLabel" name="label_14">
      <property name="geometry">
       <rect>
        <x>20</x>
@@ -560,7 +541,7 @@ Connection,
       <string>From Northing/Latitude:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="a4b5">
+    <widget class="QLabel" name="label_15">
      <property name="geometry">
       <rect>
        <x>20</x>
@@ -573,7 +554,7 @@ Connection,
       <string>To Northing/Latitude:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="a4b6">
+    <widget class="QLabel" name="label_16">
      <property name="geometry">
       <rect>
        <x>20</x>
@@ -586,7 +567,7 @@ Connection,
       <string>To Easting/Longitude:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="a4b7">
+    <widget class="QLabel" name="label_17">
      <property name="geometry">
       <rect>
        <x>20</x>
@@ -599,7 +580,7 @@ Connection,
       <string>Scale Factor:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="a4b8">
+    <widget class="QLabel" name="label_18">
      <property name="geometry">
       <rect>
        <x>20</x>
@@ -729,7 +710,7 @@ Connection,
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="a4b9">
+    <widget class="QLabel" name="label_19">
      <property name="geometry">
       <rect>
        <x>20</x>
@@ -745,7 +726,7 @@ Connection,
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="a4a0">
+    <widget class="QLabel" name="label_20">
      <property name="geometry">
       <rect>
        <x>40</x>
@@ -768,8 +749,8 @@ defined  CRS/SRID/EPSG.</string>
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>391</width>
-      <height>438</height>
+      <width>96</width>
+      <height>26</height>
      </rect>
     </property>
     <attribute name="label">
@@ -813,7 +794,7 @@ defined  CRS/SRID/EPSG.</string>
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="a4a2">
+    <widget class="QLabel" name="label_22">
      <property name="geometry">
       <rect>
        <x>30</x>
@@ -826,7 +807,7 @@ defined  CRS/SRID/EPSG.</string>
       <string>From Northing:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="a4a3">
+    <widget class="QLabel" name="label_23">
      <property name="geometry">
       <rect>
        <x>40</x>
@@ -849,7 +830,7 @@ Database in the &quot;Save as SRID&quot;</string>
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="a4a4">
+    <widget class="QLabel" name="label_24">
      <property name="geometry">
       <rect>
        <x>30</x>
@@ -900,7 +881,7 @@ Database in the &quot;Save as SRID&quot;</string>
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="a4a5">
+    <widget class="QLabel" name="label_25">
      <property name="geometry">
       <rect>
        <x>30</x>
@@ -913,7 +894,7 @@ Database in the &quot;Save as SRID&quot;</string>
       <string>To Northing:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="a4a6">
+    <widget class="QLabel" name="label_26">
      <property name="geometry">
       <rect>
        <x>30</x>
@@ -926,7 +907,7 @@ Database in the &quot;Save as SRID&quot;</string>
       <string>Rotation (Dec Deg):</string>
      </property>
     </widget>
-    <widget class="QLabel" name="a4a7">
+    <widget class="QLabel" name="label_27">
      <property name="geometry">
       <rect>
        <x>30</x>
@@ -961,7 +942,7 @@ Database in the &quot;Save as SRID&quot;</string>
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="a4a8">
+    <widget class="QLabel" name="label_28">
      <property name="geometry">
       <rect>
        <x>30</x>
